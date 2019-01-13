@@ -44,6 +44,10 @@ MORE IMPORTANT: It's suggested to use Tools > Unlock Game Files For Modding if i
 ------------------------------------------------------------------------------------------------------------
 Changelog: (+ Addition, * Change, ! Attention, - Deletion)
 
+v1.0.0.401 (Build 1; Rev.00 BETA) :
+* Fixed an issue with Car Info Array when users try to add more than 1 car.
+* Fixed an issue which makes added textures invisible.
+
 v1.0.0.400 (Build 1; Rev.00 BETA) :
 + Initial release.
 ------------------------------------------------------------------------------------------------------------

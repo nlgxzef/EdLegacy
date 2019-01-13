@@ -674,7 +674,7 @@ namespace Ed
                             Car.InCarSteeringWheelRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetPad", 0.0f));
 
                             // Will be set while adding to GlobalB
-                            Car.Type = GetCarTypeIDFromResources(XName);
+                            Car.Type = GetCarTypeIDFromResources(XName) + Array.FindIndex(INIFiles, x => x == i);
 
                             // Backwards support for MWInside's ReCompiler
                             string CarClass = IniReader.GetValue("INFO", "Class");
@@ -1524,12 +1524,14 @@ namespace Ed
                                 if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS_FRONTEND.BIN")
                                 {
                                     ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count();
+                                    ByteArrayForNewStrings.Add(0);
+                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
                                 }
                                 else
                                 {
                                     ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count();
+                                    ByteArrayForNewStrings.Add(0);
+                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
                                 }
                             }
 
@@ -1590,7 +1592,7 @@ namespace Ed
                             }
                             // Copy
                             File.Copy(Path.Combine(GetTempPath(), @"Languages\" + LangFile.Name), Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name), true);
-                            Log("Successfully rebuilt" + LangFile.Name + "file.");
+                            Log("Successfully rebuilt " + LangFile.Name + " file.");
                         }
 
                         // -----------------------------------------------------
@@ -1788,7 +1790,8 @@ namespace Ed
                                 ANewTexSec.UnkByte1 = (byte)Math.Log(HorRes, 2); // Looks like there were some quick maths
                                 ANewTexSec.UnkByte2 = (byte)Math.Log(VerRes, 2); // The values are log based 2 of res values.
                                 ANewTexSec.UnkByte3 = 0x00;
-                                ANewTexSec.Unknown1 = 0x00;
+                                /*
+                                ANewTexSec.Unknown1 = 0x00; // temp
                                 ANewTexSec.Unknown3 = 0x20;
                                 ANewTexSec.Unknown4 = 0x500;
                                 ANewTexSec.Unknown5 = 0x10200;
@@ -1797,6 +1800,21 @@ namespace Ed
                                 ANewTexSec.Unknown8 = 0x1000000;
                                 ANewTexSec.Unknown9 = 0x100;
                                 ANewTexSec.Unknown10 = 0x00;
+                                ANewTexSec.Unknown11 = 0x00;
+                                ANewTexSec.Unknown12 = 0x00;
+                                ANewTexSec.Unknown17 = 0x00;
+                                ANewTexSec.Unknown18 = 0x00;
+                                */
+
+                                ANewTexSec.Unknown1 = 0x10000; // temp
+                                ANewTexSec.Unknown3 = 0;
+                                ANewTexSec.Unknown4 = 0x20;
+                                ANewTexSec.Unknown5 = 0x500;
+                                ANewTexSec.Unknown6 = 0x10200;
+                                ANewTexSec.Unknown7 = 0x0;
+                                ANewTexSec.Unknown8 = 0;
+                                ANewTexSec.Unknown9 = 0x1000000;
+                                ANewTexSec.Unknown10 = 0x100;
                                 ANewTexSec.Unknown11 = 0x00;
                                 ANewTexSec.Unknown12 = 0x00;
                                 ANewTexSec.Unknown17 = 0x00;
