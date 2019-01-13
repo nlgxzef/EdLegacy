@@ -587,6 +587,9 @@ namespace Ed
             {
                 DirectoryInfo di = new DirectoryInfo(ConfigPath);
                 FileInfo[] INIFiles = di.GetFiles("*.ini");
+
+                int AddedCarCount = 0;
+
                 if (INIFiles.Length == 0)
                 {
                     MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "The directory doesn't contain any config files.");
@@ -674,7 +677,8 @@ namespace Ed
                             Car.InCarSteeringWheelRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetPad", 0.0f));
 
                             // Will be set while adding to GlobalB
-                            Car.Type = GetCarTypeIDFromResources(XName) + Array.FindIndex(INIFiles, x => x == i);
+                            Car.Type = GetCarTypeIDFromResources(XName) + AddedCarCount;
+                            AddedCarCount++;
 
                             // Backwards support for MWInside's ReCompiler
                             string CarClass = IniReader.GetValue("INFO", "Class");
@@ -781,7 +785,7 @@ namespace Ed
                             // ----------------------------------------------------------------------
                             // Collision
                             
-                            Collision.CopyFrom = IniReader.GetValue("COLLISION", "CopyFrom", "911TURBO");
+                            Collision.CopyFrom = IniReader.GetValue("COLLISION", "CopyFrom", "");
                             Collision.CopyTo = XName;
 
                             NewCollisionList.Add(Collision);
@@ -1011,17 +1015,33 @@ namespace Ed
 
                         // Add new data
                         int NumberOfXNames = (int)ChunkSize / 4;
+                        int NumberOfAddedXNames = 0;
                         CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
 
                         foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
                         {
                             // Skip if data already exists
-                            if (GetCarPartIDFromResources(Encoding.ASCII.GetString(Car.CarTypeName)) < NumberOfXNames) continue;
+                            bool DoesXNameExist = false;
 
+                            CarInfoCarParts5Reader.BaseStream.Position = 8; // skip ID and size
+
+                            while (CarInfoCarParts5Reader.BaseStream.Position < CarInfoCarParts5Reader.BaseStream.Length)
+                            {
+                                if (Car.CarTypeNameHash == CarInfoCarParts5Reader.ReadUInt32())
+                                {
+                                    DoesXNameExist = true;
+                                    break;
+                                }
+                            }
+                            if (DoesXNameExist) continue;
+
+                            // Move to the end and write data
+                            CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
                             CarInfoCarParts5Writer.Write(Car.CarTypeNameHash);
 
-                            // Increase spoiler count for chunk size calculation
+                            // Increase count for chunk size calculation
                             NumberOfXNames++;
+                            NumberOfAddedXNames++;
                         }
 
                         // Fix size in Chunk Header
@@ -1091,7 +1111,7 @@ namespace Ed
                         foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
                         {
                             // Skip if data already exists
-                            if (GetCarPartIDFromResources(Encoding.ASCII.GetString(Car.CarTypeName)) < CarID) continue;
+                            if ((GetCarPartIDFromResources(Encoding.ASCII.GetString(Car.CarTypeName)) + NumberOfRacerPartLists + NumberOfCopPartLists + NumberOfTrafficPartLists) < CarID) continue;
 
                             switch (Car.UsageType)
                             {
@@ -1105,6 +1125,7 @@ namespace Ed
                                     }
 
                                     NumberOfRacerPartLists++;
+                                    CarID++;
                                     break;
 
                                 case (int)EdTypes.CarUsageType.Cop:
@@ -1115,6 +1136,7 @@ namespace Ed
                                         CarInfoCarParts6Writer.Write(u);
                                     }
                                     NumberOfCopPartLists++;
+                                    CarID++;
                                     break;
 
                                 case (int)EdTypes.CarUsageType.Traffic:
@@ -1125,10 +1147,9 @@ namespace Ed
                                         CarInfoCarParts6Writer.Write(u);
                                     }
                                     NumberOfTrafficPartLists++;
+                                    CarID++;
                                     break;
                             }
-
-                            CarID++;
                         }
 
                         // Fix size in Chunk Header
@@ -1302,6 +1323,7 @@ namespace Ed
                         // Copy the new ones with new names and fix their hashes
                         foreach (EdTypes.CarCollision Coll in NewCollisionList)
                         {
+                            if (string.IsNullOrEmpty(Coll.CopyFrom)) continue;
                             if (!File.Exists(Path.Combine(GetTempPath(), @"Global\BCHUNK_BOUNDS\" + Coll.CopyFrom + ".bin"))) // Skip adding collision if data cannot be found
                             {
                                 continue;
