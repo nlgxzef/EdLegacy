@@ -1323,7 +1323,8 @@ namespace Ed
                         // Copy the new ones with new names and fix their hashes
                         foreach (EdTypes.CarCollision Coll in NewCollisionList)
                         {
-                            if (string.IsNullOrEmpty(Coll.CopyFrom)) continue;
+                            if (string.IsNullOrEmpty(Coll.CopyFrom)) continue; // ignore if it's not found in config
+                            if (Coll.CopyFrom == Coll.CopyTo) continue; // ignore if user tries to copy an existing collision with the same name
                             if (!File.Exists(Path.Combine(GetTempPath(), @"Global\BCHUNK_BOUNDS\" + Coll.CopyFrom + ".bin"))) // Skip adding collision if data cannot be found
                             {
                                 continue;

@@ -47,6 +47,17 @@ namespace Ed
         /// </summary>
         public string CommentDelimiter { get; set; }
 
+        public string TrimCommentsAndSpaces(string value)
+        {
+            string NewValue;
+            if (value.IndexOf(CommentDelimiter) == -1) NewValue = value;
+            else NewValue = value.Substring(0, value.IndexOf(CommentDelimiter));
+
+            NewValue = NewValue.TrimStart(' ', '\t').TrimEnd(' ', '\t');
+
+            return NewValue;
+        }
+
         private string theFile = null;
 
         /// <summary>
@@ -146,8 +157,8 @@ namespace Ed
             string value;
             if (!TryGetValue(section, key, out value))
                 return defaultValue;
-
-            return value;
+            
+            return TrimCommentsAndSpaces(value);
         }
 
         /// <summary>
@@ -182,6 +193,7 @@ namespace Ed
                 return defaultValue;
 
             int value;
+            stringValue = TrimCommentsAndSpaces(stringValue);
             if (!int.TryParse(stringValue, out value))
             {
                 double dvalue;
@@ -213,6 +225,7 @@ namespace Ed
             if (!TryGetValue(section, key, out stringValue))
                 return defaultValue;
 
+            stringValue = TrimCommentsAndSpaces(stringValue);
             double value;
             if (!double.TryParse(stringValue, out value))
                 return defaultValue;
@@ -237,6 +250,7 @@ namespace Ed
             if (!TryGetValue(section, key, out stringValue))
                 return defaultValue;
 
+            stringValue = TrimCommentsAndSpaces(stringValue);
             return (stringValue != "0" && !stringValue.StartsWith("f", true, null));
         }
 
