@@ -12,8 +12,6 @@ namespace Ed
         {
             public string Label;
             public string Name;
-            public string ManufacturerLogo;
-            public string SecondaryLogo;
         }
     }
 }

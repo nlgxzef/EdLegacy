@@ -361,6 +361,8 @@ namespace Ed
             int CarTypeID = -1;
             int i;
 
+            if (_XName.IndexOf('\0') != -1) _XName = _XName.Substring(0, _XName.IndexOf('\0')); // Fix nulls at the end
+
             try
             {
                 var CarInfoArrayFile = new FileStream(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), FileMode.Open, FileAccess.Read);
@@ -377,7 +379,8 @@ namespace Ed
                         CarInfoArrayFileReader.BaseStream.Position = 16 + (i * 0xD0);
 
                         string XName = Encoding.ASCII.GetString(CarInfoArrayFileReader.ReadBytes(16));
-
+                        if (XName.IndexOf('\0') != -1) XName = XName.Substring(0, XName.IndexOf('\0')); // Fix nulls at the end
+                        
                         if (XName == _XName)
                         {
                             CarTypeID = i;
@@ -403,6 +406,8 @@ namespace Ed
         {
             int CarPartID = -1;
             int i;
+
+            if (_XName.IndexOf('\0') != -1) _XName = _XName.Substring(0, _XName.IndexOf('\0')); // Fix nulls at the end
 
             try
             {
@@ -677,8 +682,12 @@ namespace Ed
                             Car.InCarSteeringWheelRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetPad", 0.0f));
 
                             // Will be set while adding to GlobalB
-                            Car.Type = GetCarTypeIDFromResources(XName) + AddedCarCount;
-                            AddedCarCount++;
+                            Car.Type = GetCarTypeIDFromResources(XName);
+                            if (Car.Type >= GetCarTypeIDFromResources("")) // Increase the ID if it's a new car.
+                            {
+                                Car.Type += AddedCarCount; 
+                                AddedCarCount++;
+                            }
 
                             // Backwards support for MWInside's ReCompiler
                             string CarClass = IniReader.GetValue("INFO", "Class");
@@ -725,7 +734,6 @@ namespace Ed
                             {
                                 Car.UsageType = IniReader.GetInteger("INFO", "UsageType", (int)EdTypes.CarUsageType.Racer, (int)EdTypes.CarUsageType.Racer, (int)EdTypes.CarUsageType.Universal);
                                 Car.CarMemTypeHash = (uint)BinHash.Hash(IniReader.GetValue("INFO", "CarMemType", "Racing"));
-                                Car.DefaultBasePaint = (uint)BinHash.Hash("GLOSS_L1_COLOR17");
                             }
 
                             Car.MaxInstances[0] = (byte)IniReader.GetInteger("INFO", "MaxInstances1", 0, byte.MinValue, byte.MaxValue);
@@ -763,7 +771,7 @@ namespace Ed
                             Car.DefaultSkinNumber = (byte)IniReader.GetInteger("INFO", "DefaultSkinNumber", 1, byte.MinValue, byte.MaxValue);
                             Car.Skinnable = (byte)IniReader.GetInteger("INFO", "Skinnable", Car.UsageType == (int)EdTypes.CarUsageType.Racer ? 1 : 0, byte.MinValue, byte.MaxValue); // Checks usage type if not set in ini
                             Car.Padding = IniReader.GetInteger("INFO", "Padding");
-                            // Car.DefaultBasePaint = IniReader.GetInteger("INFO", "DefaultBasePaint");
+                            Car.DefaultBasePaint = (uint)BinHash.Hash(IniReader.GetValue("INFO", "DefaultBasePaint", "GLOSS_L1_COLOR17"));
 
                             NewCarTypeInfoArray.Add(Car);
 
@@ -771,11 +779,11 @@ namespace Ed
                             // SlotTypes (Spoilers)
 
                             SpoilerType.CarTypeNameHash = (uint)BinHash.Hash(XName);
-                            SpoilerType.Unk1 = 0x30;
+                            SpoilerType.CarSlotID = 0x30; // SPOILER
                             SpoilerType.CarTypeNameHash2 = (uint)BinHash.Hash(XName);
                             SpoilerType.SpoilerHash = (uint)BinHash.Hash(IniReader.GetValue("SPOILER", "SpoilerSet", "SPOILER"));
-                            SpoilerType.SpoilerAutoSculptHash = (uint)BinHash.Hash(IniReader.GetValue("SPOILER", "AutosculptSpoilerSet", "SPOILER_AS2"));
-                            SpoilerType.Unk2 = 0xC2F6EBB0;
+                            SpoilerType.SpoilerAutoSculpt2Hash = (uint)BinHash.Hash(IniReader.GetValue("SPOILER", "AutosculptSpoilerSet", "SPOILER_AS2"));
+                            SpoilerType.SpoilerAutoSculptHash = 0xC2F6EBB0; // SPOILER_AS
                             SpoilerType.Unk3Zero = 0;
                             SpoilerType.Unk4Zero = 0;
                             SpoilerType.Unk5Zero = 0;
@@ -795,9 +803,7 @@ namespace Ed
 
                             Resource.Label = IniReader.GetValue("RESOURCES", "Label", "");
                             Resource.Name = IniReader.GetValue("RESOURCES", "Name", "");
-                            Resource.ManufacturerLogo = IniReader.GetValue("RESOURCES", "ManufacturerLogo", "CARSELECT_MANUFACTURER_" + IniReader.GetValue("INFO", "Manufacturer"));
-                            Resource.SecondaryLogo = IniReader.GetValue("RESOURCES", "SecondaryLogo", "SECONDARY_LOGO_" + XName);
-
+                            
                             NewResourcesList.Add(Resource);
                             
                         }
@@ -945,14 +951,14 @@ namespace Ed
                         foreach (EdTypes.SlotType Spoiler in NewSpoilerTypes)
                         {
                             // Skip if types are default
-                            if (Spoiler.SpoilerHash == BinHash.Hash("SPOILER") && Spoiler.SpoilerAutoSculptHash == BinHash.Hash("SPOILER_AS2")) continue;
+                            if ((Spoiler.SpoilerHash == (uint)BinHash.Hash("SPOILER")) && (Spoiler.SpoilerAutoSculpt2Hash == (uint)BinHash.Hash("SPOILER_AS2"))) continue;
 
                             CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash);
-                            CarInfoSlotTypesWriter.Write(Spoiler.Unk1);
+                            CarInfoSlotTypesWriter.Write(Spoiler.CarSlotID);
                             CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash2);
                             CarInfoSlotTypesWriter.Write(Spoiler.SpoilerHash);
+                            CarInfoSlotTypesWriter.Write(Spoiler.SpoilerAutoSculpt2Hash);
                             CarInfoSlotTypesWriter.Write(Spoiler.SpoilerAutoSculptHash);
-                            CarInfoSlotTypesWriter.Write(Spoiler.Unk2);
                             CarInfoSlotTypesWriter.Write(Spoiler.Unk3Zero);
                             CarInfoSlotTypesWriter.Write(Spoiler.Unk4Zero);
                             CarInfoSlotTypesWriter.Write(Spoiler.Unk5Zero);

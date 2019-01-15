@@ -44,6 +44,10 @@ MORE IMPORTANT: It's suggested to use Tools > Unlock Game Files For Modding if i
 ------------------------------------------------------------------------------------------------------------
 Changelog: (+ Addition, * Change, ! Attention, - Deletion)
 
+v1.0.0.407 (Build 1; Rev.00 BETA) :
+* Fixed an issue when user tries to make changes on an existing car.
+* Fixed an issue which causes duplicate entries in Car Part Info.
+
 v1.0.0.405 (Build 1; Rev.00 BETA) :
 * Fixed an issue with comments (text after //) in config files.
 * Fixed an issue when user tries to copy an existing collision for a car with the same xname.
