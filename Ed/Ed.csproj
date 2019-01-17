@@ -75,6 +75,7 @@
     <Compile Include="bVector3.cs" />
     <Compile Include="CarCollision.cs" />
     <Compile Include="CarPartIDsCarbon.cs" />
+    <Compile Include="CarPartIDsMostWanted.cs" />
     <Compile Include="CarResource.cs" />
     <Compile Include="CarTypeInfo.cs" />
     <Compile Include="EdCreateConfigFile.cs">
