@@ -78,8 +78,8 @@
             // 
             // DialogWorkingFolder
             // 
-            this.DialogWorkingFolder.Description = "Select the main directory of the game you want to work on. Only NFS Carbon is sup" +
-    "ported for now.";
+            this.DialogWorkingFolder.Description = "Select the main directory of the game you want to work on. Supported games are: N" +
+    "FS Most Wanted (2005), NFS Carbon.";
             this.DialogWorkingFolder.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
             // ButtonAddCars
@@ -319,7 +319,7 @@
             // 
             this.aboutEdToolStripMenuItem.Name = "aboutEdToolStripMenuItem";
             this.aboutEdToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.aboutEdToolStripMenuItem.Text = "About Ed...";
             this.aboutEdToolStripMenuItem.Click += new System.EventHandler(this.aboutEdToolStripMenuItem_Click);
             // 
