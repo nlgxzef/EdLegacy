@@ -55,6 +55,7 @@
             this.MenuItemBackup = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemLog = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemTempFiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItemRestoreGlobalB = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutEdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListCarsToAdd = new System.Windows.Forms.ListView();
@@ -89,7 +90,7 @@
             this.ButtonAddCars.Name = "ButtonAddCars";
             this.ButtonAddCars.Size = new System.Drawing.Size(114, 23);
             this.ButtonAddCars.TabIndex = 3;
-            this.ButtonAddCars.Text = "Add Cars";
+            this.ButtonAddCars.Text = "Apply";
             this.ButtonAddCars.UseVisualStyleBackColor = true;
             this.ButtonAddCars.Click += new System.EventHandler(this.addCarsFromConfigFilesToolStripMenuItem_Click);
             // 
@@ -219,21 +220,21 @@
             // 
             this.MenuItemRefresh.Name = "MenuItemRefresh";
             this.MenuItemRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.MenuItemRefresh.Size = new System.Drawing.Size(281, 22);
+            this.MenuItemRefresh.Size = new System.Drawing.Size(298, 22);
             this.MenuItemRefresh.Text = "Refresh Config View";
             this.MenuItemRefresh.Click += new System.EventHandler(this.MenuItemRefresh_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(295, 6);
             // 
             // createConfigFileToolStripMenuItem
             // 
             this.createConfigFileToolStripMenuItem.Enabled = false;
             this.createConfigFileToolStripMenuItem.Name = "createConfigFileToolStripMenuItem";
             this.createConfigFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
-            this.createConfigFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.createConfigFileToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
             this.createConfigFileToolStripMenuItem.Text = "Create Config File...";
             this.createConfigFileToolStripMenuItem.ToolTipText = "Not yet implemented.";
             // 
@@ -241,20 +242,20 @@
             // 
             this.addCarsFromConfigFilesToolStripMenuItem.Name = "addCarsFromConfigFilesToolStripMenuItem";
             this.addCarsFromConfigFilesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
-            this.addCarsFromConfigFilesToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.addCarsFromConfigFilesToolStripMenuItem.Text = "Add Cars From Config File(s)";
+            this.addCarsFromConfigFilesToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
+            this.addCarsFromConfigFilesToolStripMenuItem.Text = "Apply the Changes in Config File(s)";
             this.addCarsFromConfigFilesToolStripMenuItem.Click += new System.EventHandler(this.addCarsFromConfigFilesToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(278, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(295, 6);
             // 
             // menuUnlockFiles
             // 
             this.menuUnlockFiles.Name = "menuUnlockFiles";
             this.menuUnlockFiles.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.U)));
-            this.menuUnlockFiles.Size = new System.Drawing.Size(281, 22);
+            this.menuUnlockFiles.Size = new System.Drawing.Size(298, 22);
             this.menuUnlockFiles.Text = "Unlock Game Files For Modding";
             this.menuUnlockFiles.ToolTipText = "Unlocks game files for modding by invalidating memory files in Global folder.\r\nIt" +
     "\'s suggested to use this option for once.";
@@ -264,7 +265,7 @@
             // 
             this.restoreBackupsToolStripMenuItem.Name = "restoreBackupsToolStripMenuItem";
             this.restoreBackupsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R)));
-            this.restoreBackupsToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.restoreBackupsToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
             this.restoreBackupsToolStripMenuItem.Text = "Restore Backups";
             this.restoreBackupsToolStripMenuItem.ToolTipText = "Restores backups taken by Ed, which have \".edbackup\" extension.";
             this.restoreBackupsToolStripMenuItem.Click += new System.EventHandler(this.ButtonRestoreBackups_Click);
@@ -274,7 +275,8 @@
             this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuItemBackup,
             this.MenuItemLog,
-            this.MenuItemTempFiles});
+            this.MenuItemTempFiles,
+            this.MenuItemRestoreGlobalB});
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(61, 20);
             this.toolStripMenuItem3.Text = "Options";
@@ -285,8 +287,9 @@
             this.MenuItemBackup.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MenuItemBackup.Name = "MenuItemBackup";
             this.MenuItemBackup.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.B)));
-            this.MenuItemBackup.Size = new System.Drawing.Size(269, 22);
+            this.MenuItemBackup.Size = new System.Drawing.Size(314, 22);
             this.MenuItemBackup.Text = "Create Backups Automatically";
+            this.MenuItemBackup.ToolTipText = "Makes backups of files before doing any operation with them.";
             this.MenuItemBackup.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // MenuItemLog
@@ -295,17 +298,31 @@
             this.MenuItemLog.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MenuItemLog.Name = "MenuItemLog";
             this.MenuItemLog.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.L)));
-            this.MenuItemLog.Size = new System.Drawing.Size(269, 22);
+            this.MenuItemLog.Size = new System.Drawing.Size(314, 22);
             this.MenuItemLog.Text = "Enable Logging";
+            this.MenuItemLog.ToolTipText = "Saves a summary of operations made by Ed into Ed.log file.";
             this.MenuItemLog.Click += new System.EventHandler(this.MenuItemLog_Click);
             // 
             // MenuItemTempFiles
             // 
             this.MenuItemTempFiles.Name = "MenuItemTempFiles";
             this.MenuItemTempFiles.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.T)));
-            this.MenuItemTempFiles.Size = new System.Drawing.Size(269, 22);
+            this.MenuItemTempFiles.Size = new System.Drawing.Size(314, 22);
             this.MenuItemTempFiles.Text = "Keep Temporary Files";
+            this.MenuItemTempFiles.ToolTipText = "Keeps files created by Ed in Temp folder instead of deleting them after adding ca" +
+    "rs.";
             this.MenuItemTempFiles.Click += new System.EventHandler(this.keepTemporaryFilesToolStripMenuItem_Click);
+            // 
+            // MenuItemRestoreGlobalB
+            // 
+            this.MenuItemRestoreGlobalB.Checked = true;
+            this.MenuItemRestoreGlobalB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MenuItemRestoreGlobalB.Name = "MenuItemRestoreGlobalB";
+            this.MenuItemRestoreGlobalB.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.G)));
+            this.MenuItemRestoreGlobalB.Size = new System.Drawing.Size(314, 22);
+            this.MenuItemRestoreGlobalB.Text = "Automatically Restore GlobalB Backup";
+            this.MenuItemRestoreGlobalB.ToolTipText = "Auto restores the backup of GlobalB.lzc file before adding cars.";
+            this.MenuItemRestoreGlobalB.Click += new System.EventHandler(this.automaticallyRestoreGlobalBBackupBeforeAddingCarsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
@@ -319,7 +336,7 @@
             // 
             this.aboutEdToolStripMenuItem.Name = "aboutEdToolStripMenuItem";
             this.aboutEdToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutEdToolStripMenuItem.Text = "About Ed...";
             this.aboutEdToolStripMenuItem.Click += new System.EventHandler(this.aboutEdToolStripMenuItem_Click);
             // 
@@ -412,6 +429,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ToolStripMenuItem MenuItemRefresh;
         private System.Windows.Forms.ToolStripMenuItem MenuItemTempFiles;
+        private System.Windows.Forms.ToolStripMenuItem MenuItemRestoreGlobalB;
     }
 }
 

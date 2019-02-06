@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Diagnostics;
@@ -20,9 +17,10 @@ namespace Ed
             InitializeComponent();
         }
 
-        bool DisableLogs = false;
-        bool DisableBackups = false;
-        bool KeepTempFiles = false;
+        bool DisableLogs;
+        bool DisableBackups;
+        bool KeepTempFiles;
+        bool AutoRestoreGlobalB;
         int CurrentGame;
         string WorkingFolder = "";
 
@@ -413,6 +411,20 @@ namespace Ed
             ToggleButtons(false);
             ToggleDebugStuff(); // will only work with Debug config
             CreateLogFile();
+
+            // Load settings
+            DisableLogs = !Ed.Default.DoLogs;
+            MenuItemLog.Checked = Ed.Default.DoLogs;
+
+            DisableBackups = !Ed.Default.DoBackups;
+            MenuItemBackup.Checked = Ed.Default.DoBackups;
+
+            KeepTempFiles = Ed.Default.KeepTemporaryFiles;
+            MenuItemTempFiles.Checked = KeepTempFiles;
+
+            AutoRestoreGlobalB = Ed.Default.AutoRestoreGlobalB;
+            MenuItemRestoreGlobalB.Checked = AutoRestoreGlobalB;
+
             Log("Ready.", true);
         }
         
@@ -497,6 +509,9 @@ namespace Ed
         {
             MenuItemLog.Checked = !MenuItemLog.Checked;
             DisableLogs = !MenuItemLog.Checked;
+
+            Ed.Default.DoLogs = MenuItemLog.Checked;
+            Ed.Default.Save();
         }
 
         private void toolStripMenuItem8_Click(object sender, EventArgs e)
@@ -508,6 +523,9 @@ namespace Ed
         {
             MenuItemBackup.Checked = !MenuItemBackup.Checked;
             DisableBackups = !MenuItemBackup.Checked;
+
+            Ed.Default.DoBackups = MenuItemBackup.Checked;
+            Ed.Default.Save();
         }
 
         private void MenuItemBrowseResources_Click(object sender, EventArgs e)
@@ -1761,7 +1779,7 @@ namespace Ed
                     if (!DisableBackups)
                     {
                         if (!File.Exists(GlobalBPath + ".edbackup")) File.Copy(GlobalBPath, GlobalBPath + ".edbackup");
-                        else File.Copy(GlobalBPath + ".edbackup", GlobalBPath, true);
+                        else if (AutoRestoreGlobalB) File.Copy(GlobalBPath + ".edbackup", GlobalBPath, true);
                     }
 
                     // Decompress GlobalB if it's in JDLZ format
@@ -1910,23 +1928,27 @@ namespace Ed
                                 AHashInfo.StringHash = (uint)BinHash.Hash(CarRes.Label);
                                 AHashInfo.OffsetInTextBlock = (uint)(Language.ChunkSize - Language.TextBlockPosition); // The address string will start from
 
-                                HashList.Add(AHashInfo);
-                                Language.NumberOfEntries++;
-                                Language.TextBlockPosition += 8;
-                                Language.ChunkSize += 8;
+                                if (!HashList.Exists(x => x.StringHash == AHashInfo.StringHash))
+                                {
+                                    HashList.Add(AHashInfo);
+                                    Language.NumberOfEntries++;
+                                    Language.TextBlockPosition += 8;
+                                    Language.ChunkSize += 8;
 
-                                if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS.BIN")
-                                {
-                                    ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
-                                    ByteArrayForNewStrings.Add(0);
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
+                                    if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS.BIN")
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
+                                    }
+                                    else
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
+                                    }
                                 }
-                                else
-                                {
-                                    ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
-                                    ByteArrayForNewStrings.Add(0);
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
-                                }
+                               
                             }
 
                             // Sort by hash
@@ -2064,22 +2086,25 @@ namespace Ed
                                 AHashInfo.StringHash = (uint)BinHash.Hash(CarRes.Label);
                                 AHashInfo.OffsetInTextBlock = (uint)(Language.ChunkSize - Language.TextBlockPosition); // The address string will start from
 
-                                HashList.Add(AHashInfo);
-                                Language.NumberOfEntries++;
-                                Language.TextBlockPosition += 8;
-                                Language.ChunkSize += 8;
+                                if (!HashList.Exists(x => x.StringHash == AHashInfo.StringHash))
+                                {
+                                    HashList.Add(AHashInfo);
+                                    Language.NumberOfEntries++;
+                                    Language.TextBlockPosition += 8;
+                                    Language.ChunkSize += 8;
 
-                                if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS_FRONTEND.BIN")
-                                {
-                                    ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
-                                    ByteArrayForNewStrings.Add(0);
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
-                                }
-                                else
-                                {
-                                    ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
-                                    ByteArrayForNewStrings.Add(0);
-                                    Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
+                                    if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS_FRONTEND.BIN")
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
+                                    }
+                                    else
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
+                                    }
                                 }
                             }
 
@@ -2475,18 +2500,35 @@ namespace Ed
                         process.Start();
                         process.WaitForExit();
 
+                        if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")))
+                        {
+                            // merge other chunks in
+                            var FrontAFile = File.Create(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontA.bun"));
+                            var FrontAFileWriter = new BinaryWriter(FrontAFile);
+
+                            // Write our new TPK
+                            FrontAFileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")));
+
+                            // Write the rest
+                            FrontAFileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FONT_MW_TITLE.bin")));
+                            FrontAFileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FONT_MW_CUSTOM_NUMBERS.bin")));
+
+                            // close stream
+                            FrontAFileWriter.Close();
+                            FrontAFileWriter.Dispose();
+                            FrontAFile.Close();
+                            FrontAFile.Dispose();
+                        }
+
                         // Copy it to the game dir w/ a backup
                         // Make a backup
                         if (!DisableBackups)
                         {
-                            if ((!File.Exists(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun" + ".edbackup"))) && File.Exists(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun")))
+                            if ((!File.Exists(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun" + ".edbackup"))) && File.Exists((Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun"))))
                                 File.Copy(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun" + ".edbackup"), true);
                         }
                         // Copy
-                        if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")))
-                        {
-                            File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun"), true);
-                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\" + "FrontA.bun"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun"), true);
 
                         Log("Successfully rebuilt FrontA.bun file.");
                     }
@@ -2835,6 +2877,7 @@ namespace Ed
                             // Write the rest
                             FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTexturesPC.tpk")));
                             FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\BCHUNK_QUICKSPLINE.bin")));
+                            FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FONT_NFS_MOVIE_LARGE.bin")));
 
                             // close stream
                             FrontB1FileWriter.Close();
@@ -2842,9 +2885,7 @@ namespace Ed
                             FrontB1File.Close();
                             FrontB1File.Dispose();
                         }
-
-
-
+                        
                         // Copy it to the game dir w/ a backup
                         // Make a backup
                         if (!DisableBackups)
@@ -2878,6 +2919,9 @@ namespace Ed
         {
             MenuItemTempFiles.Checked = !MenuItemTempFiles.Checked;
             KeepTempFiles = MenuItemTempFiles.Checked;
+
+            Ed.Default.KeepTemporaryFiles = KeepTempFiles;
+            Ed.Default.Save();
         }
 
         private void aboutEdToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2899,6 +2943,15 @@ namespace Ed
 
             MessageBox.Show("Successfully unlocked game files for modding.");
             Log("Successfully unlocked game files for modding.", true);
+        }
+
+        private void automaticallyRestoreGlobalBBackupBeforeAddingCarsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MenuItemRestoreGlobalB.Checked = !MenuItemRestoreGlobalB.Checked;
+            AutoRestoreGlobalB = MenuItemRestoreGlobalB.Checked;
+
+            Ed.Default.AutoRestoreGlobalB = AutoRestoreGlobalB;
+            Ed.Default.Save();
         }
     }
 }

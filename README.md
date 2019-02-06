@@ -35,7 +35,7 @@ Brotip: It's usually in C:\Program Files (x86)\Electronic Arts or C:\Program Fil
 4) If the game is detected, you will see the folder path under the Config List view.
 5) Config files for the game will be listed on the screen. If you don't see any, press Ctrl+B or click Main > Browse Config Folder... to copy them in. Then, press F5 to refresh the view.  
 Brotip: Also see the Example Config File.ini.  
-6) Now press Alt+A, click "Add Cars" button or click Tools > Add Cars from Config File(s).
+6) Now press Alt+A, click "Apply" button or click Tools > Apply the Changes in Config File(s).
 7) Ed now should do everything required to add the cars you want.
 8) If the "New cars added successfully." dialog appears, it means that Ed completed his job.
 9) Now add the VLT entries required using nfsu360's NFS-VltEd. (Author of the car should have added a .nfsms with it, or you can do it manually.)
@@ -46,6 +46,17 @@ MORE IMPORTANT: It's suggested to use Tools > Unlock Game Files For Modding if i
 
 ------------------------------------------------------------------------------------------------------------
 Changelog: (+ Addition, * Change, ! Attention, - Deletion)
+
+v1.0.0.504 (Build 1; Rev.00 BETA) :
+* Made some minor fixes and improvements.
+* Worked around weird font issue.
++ Added a setting to prevent Ed from auto-restoring GlobalB.lzc before operation.
++ Settings now get saved between sessions.
+
+v1.0.0.502 (Build 1; Rev.00 BETA) :
+* Made some minor fixes and improvements.
++ Added Russian language files into resources.
+* Improved Need for Speed: Most Wanted (2005) support.
 
 v1.0.0.500 (Build 1; Rev.00 BETA) :
 + Added Need for Speed: Most Wanted (2005) support! (Still work in progress, needs further testing.)
@@ -76,9 +87,11 @@ Coded by:
 
 Thanks to:
 - ArturoPlayerOne and 379Felipe for their successful attempts on adding cars.
-- MWInside for ReCompiler and inspiration.
+- MWInside for ReCompiler, resources and inspiration.
 - 379Felipe for testing, resources and tutorials.
 - heyitsleo for resources and their great help.
+- Hypercycle for resources.
+- Speedyheart for resources.
 - Xanvier for XNFSTPKTool.
 - Improvement Mod Team (379Felipe, GXP-10, Neon, RaTT, sparx, SpeedyHeart and Xanvier) for their great help.
 - And anyone I forgot to write here...
