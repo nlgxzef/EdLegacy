@@ -8,7 +8,7 @@ Currently supported games are:
 - Need for Speed: Most Wanted (2005)
 - Need for Speed: Carbon
 - Need for Speed: ProStreet
-- Need for Speed: Undercover
+- Need for Speed: Undercover  
 ! Please don't ask support for other games. They may or may not be added over time.  
 
 Note: To make your add-on cars work properly, you will need either one of these .asi mods:
