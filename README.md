@@ -1,4 +1,4 @@
-Download: https://github.com/nlgzrgn/Ed/releases/
+Download: https://github.com/nlgzrgn/Ed/releases/  
 Get EdPacks here: https://github.com/nlgzrgn/EdPacks/
 ------------------------------------------------------------------------------------------------------------
 Description:
