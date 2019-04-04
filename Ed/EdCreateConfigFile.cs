@@ -40,6 +40,7 @@ namespace Ed
         public void FillDefaultColor()
         {
 
+
         }
 
         public void FillCopyFrom()

@@ -1,16 +1,20 @@
 Download: https://github.com/nlgzrgn/Ed/releases/
+Get EdPacks here: https://github.com/nlgzrgn/EdPacks/
 ------------------------------------------------------------------------------------------------------------
 Description:
 
 Ed is a tool which makes adding cars easier for your favorite racing game!  
 Currently supported games are:
 - Need for Speed: Most Wanted (2005)
-- Need for Speed: Carbon  
+- Need for Speed: Carbon
+- Need for Speed: ProStreet
+- Need for Speed: Undercover
 ! Please don't ask support for other games. They may or may not be added over time.  
 
 Note: To make your add-on cars work properly, you will need either one of these .asi mods:
 - Most Wanted = NFSMW Unlimiter: https://nfsmods.xyz/mod/688
 - Carbon = NFSC Unlimiter: https://nfsmods.xyz/mod/846 | NFSC Car Array Patch by sparx: https://nfsmods.xyz/mod/834  
+- ProStreet & Undercover = Add-on cars work perfectly fine.
 ! Don't use more than one mod at the same time for a specific game. Only use the one which works better for you.  
 
 The tool is pretty straightforward and it's made for last user. So, anyone who knows English can easily use it.  
@@ -46,6 +50,14 @@ MORE IMPORTANT: It's suggested to use Tools > Unlock Game Files For Modding if i
 
 ------------------------------------------------------------------------------------------------------------
 Changelog: (+ Addition, * Change, ! Attention, - Deletion)
+
+v1.0.0.800 (Build 1; Rev.00 Release Candidate) :
++ Added Need for Speed: ProStreet and Undercover support!
++ Added new options under "Browse Resources Folder..." to open bounds (collision) and texture folders directly.
+* Allowed multiple strings per config file. (See the example config file.)
+* Changed game detection method.
+* The tool now asks if you want to download NFSMW/C Unlimiter or run the game after applying changes.
+* Made some minor fixes and improvements.
 
 v1.0.0.504 (Build 1; Rev.00 BETA) :
 * Made some minor fixes and improvements.

@@ -12,7 +12,9 @@ namespace Ed
         public enum Game : int
         {
             MostWanted = 9,
-            Carbon = 10
+            Carbon = 10,
+            ProStreet = 11,
+            Undercover = 12
         };
 
         public enum CarUsageType : int

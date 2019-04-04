@@ -30,10 +30,47 @@ namespace Ed
             ButtonViewCars.Visible = true;
         }
 
+        public void GetWhichGame(string _GamePath)
+        {
+            if (File.Exists(Path.Combine(_GamePath, "Tracks", "StreamL2RA.bun"))) CurrentGame = (int)EdTypes.Game.MostWanted;
+            else if (File.Exists(Path.Combine(_GamePath, "Tracks", "StreamL5RA.bun"))) CurrentGame = (int)EdTypes.Game.Carbon;
+            else if (File.Exists(Path.Combine(_GamePath, "Tracks", "STREAML6R_FE.bun"))) CurrentGame = (int)EdTypes.Game.ProStreet;
+            else if (File.Exists(Path.Combine(_GamePath, "Tracks", "STREAML8R_MW2.bun"))) CurrentGame = (int)EdTypes.Game.Undercover;
+            
+            if (CurrentGame == 0)
+            {
+                MessageBox.Show("Ed was unable to detect any game installations in this directory." + Environment.NewLine + "The directory doesn't contain any game executables.");
+                Log("ERROR! Ed was unable to detect any game installations in this directory.");
+                Log("The directory doesn't contain any game executables.", true);
+                ToggleButtons(false);
+            }
+            else
+            {
+                RefreshConfigView();
+                ToggleButtons(true);
+
+                switch (CurrentGame)
+                {
+                    case (int)EdTypes.Game.MostWanted:
+                        Log("NFS Most Wanted (2005) detected.", true);
+                        break;
+                    case (int)EdTypes.Game.Carbon:
+                        Log("NFS Carbon detected.", true);
+                        break;
+                    case (int)EdTypes.Game.ProStreet:
+                        Log("NFS ProStreet detected.", true);
+                        break;
+                    case (int)EdTypes.Game.Undercover:
+                        Log("NFS Undercover detected.", true);
+                        break;
+                }
+            }
+        }
+
         private void SetTitleText()
         {
-            String[] VersionInfo = ProductVersion.Split('.');
-            String VersionText = ProductName + " - " + "The Car Dealer!" + " | " + "v" + ProductVersion;
+            string[] VersionInfo = ProductVersion.Split('.');
+            string VersionText = ProductName + " - " + "The Car Dealer!" + " | " + "v" + ProductVersion;
             int VersionDelta = Int32.Parse(VersionInfo[3]);
 
             VersionText += " " + "(" + "Build" + " " + VersionInfo[0] + (Int32.Parse(VersionInfo[1]) != 0 ? VersionInfo[1] + "." : "") + ";" + " " + "Rev." + (Int32.Parse(VersionInfo[2]) < 10 ? "0" : "") + VersionInfo[2];
@@ -59,7 +96,8 @@ namespace Ed
 
                 LogStream = File.Open("Ed.log", FileMode.Create);
                 LogFile = new StreamWriter(LogStream);
-                LogFile.WriteLine("# Ed Log File");
+
+                LogFile.WriteLine("# Ed " + "v" + ProductVersion + " Log File");
                 LogFile.WriteLine("# File created on: " + DateTime.Now.ToString());
                 LogFile.WriteLine("# ------------------------------------------------------------------------------");
                 LogFile.Close();
@@ -124,8 +162,13 @@ namespace Ed
 
             switch(CurrentGame)
             {
+                case (int)EdTypes.Game.Undercover:
+                    ConfigPath = @"Config\NFSUC";
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                    ConfigPath = @"Config\NFSPS";
+                    break;
                 case (int)EdTypes.Game.Carbon:
-                default:
                     ConfigPath = @"Config\NFSC";
                     break;
                 case (int)EdTypes.Game.MostWanted:
@@ -147,8 +190,13 @@ namespace Ed
 
             switch (CurrentGame)
             {
+                case (int)EdTypes.Game.Undercover:
+                    ResourcesPath = @"Resources\NFSUC";
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                    ResourcesPath = @"Resources\NFSPS";
+                    break;
                 case (int)EdTypes.Game.Carbon:
-                default:
                     ResourcesPath = @"Resources\NFSC";
                     break;
                 case (int)EdTypes.Game.MostWanted:
@@ -164,14 +212,75 @@ namespace Ed
             return ResourcesPath;
         }
 
+        public string GetBoundsPath()
+        {
+            string ResourcesPath = "";
+
+            switch (CurrentGame)
+            {
+                case (int)EdTypes.Game.Undercover:
+                    ResourcesPath = @"Resources\NFSUC\Global\BCHUNK_BOUNDS";
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                    ResourcesPath = @"Resources\NFSPS\Global\BCHUNK_BOUNDS";
+                    break;
+                case (int)EdTypes.Game.Carbon:
+                    ResourcesPath = @"Resources\NFSC\Global\BCHUNK_BOUNDS";
+                    break;
+                case (int)EdTypes.Game.MostWanted:
+                    ResourcesPath = @"Resources\NFSMW\Global\BCHUNK_BOUNDS";
+                    break;
+            }
+
+            bool exists = Directory.Exists(ResourcesPath);
+
+            if (!exists)
+                Directory.CreateDirectory(ResourcesPath);
+
+            return ResourcesPath;
+        }
+
+        public string GetFrontEndTexturesPath()
+        {
+            string ResourcesPath = "";
+
+            switch (CurrentGame)
+            {
+                case (int)EdTypes.Game.Undercover:
+                    ResourcesPath = @"Resources\NFSUC\FrontEnd\LogoTextures\D78D2BB1";
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                    ResourcesPath = @"Resources\NFSPS\FrontEnd\FrontEndTextures\B66CD660";
+                    break;
+                case (int)EdTypes.Game.Carbon:
+                    ResourcesPath = @"Resources\NFSC\FrontEnd\FrontEndTextures\8D08770D";
+                    break;
+                case (int)EdTypes.Game.MostWanted:
+                    ResourcesPath = @"Resources\NFSMW\FrontEnd\FrontEndTextures\729181AD";
+                    break;
+            }
+
+            bool exists = Directory.Exists(ResourcesPath);
+
+            if (!exists)
+                Directory.CreateDirectory(ResourcesPath);
+
+            return ResourcesPath;
+        }
+
         public string GetTempPath()
         {
             string TempPath = "";
 
             switch (CurrentGame)
             {
+                case (int)EdTypes.Game.Undercover:
+                    TempPath = @"Temp\NFSUC";
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                    TempPath = @"Temp\NFSPS";
+                    break;
                 case (int)EdTypes.Game.Carbon:
-                default:
                     TempPath = @"Temp\NFSC";
                     break;
                 case (int)EdTypes.Game.MostWanted:
@@ -302,6 +411,9 @@ namespace Ed
         {
             int CarTypeID = -1;
             int i;
+            int CarBlockSize = 0xD0;
+
+            if (CurrentGame == (int)EdTypes.Game.Undercover) CarBlockSize = 0x130;
 
             if (_XName.IndexOf('\0') != -1) _XName = _XName.Substring(0, _XName.IndexOf('\0')); // Fix nulls at the end
 
@@ -313,12 +425,12 @@ namespace Ed
 
                 if (CarInfoArrayFileReader.ReadUInt32() == 0x00034600)
                 {
-                    int CarInfoCount = (CarInfoArrayFileReader.ReadInt32() - 8) / 0xD0;
+                    int CarInfoCount = (CarInfoArrayFileReader.ReadInt32() - 8) / CarBlockSize;
                     CarTypeID = CarInfoCount;
 
                     for (i = 0; i< CarInfoCount; i++)
                     {
-                        CarInfoArrayFileReader.BaseStream.Position = 16 + (i * 0xD0);
+                        CarInfoArrayFileReader.BaseStream.Position = 16 + (i * CarBlockSize);
 
                         string XName = Encoding.ASCII.GetString(CarInfoArrayFileReader.ReadBytes(16));
                         if (XName.IndexOf('\0') != -1) XName = XName.Substring(0, XName.IndexOf('\0')); // Fix nulls at the end
@@ -452,48 +564,7 @@ namespace Ed
 
                 try
                 {
-                    DirectoryInfo di = new DirectoryInfo(DialogWorkingFolder.SelectedPath);
-                    FileInfo[] EXEFiles = di.GetFiles("*.exe");
-                    if (EXEFiles.Length == 0)
-                    {
-                        MessageBox.Show("Ed was unable to detect any game installations in this directory." + Environment.NewLine + "The directory doesn't contain any game executables.");
-                        Log("ERROR! Ed was unable to detect any game installations in this directory.");
-                        Log("The directory doesn't contain any game executables.", true);
-                        ToggleButtons(false);
-                        return;
-                    }
-                    else
-                    {
-                        foreach (var i in EXEFiles)
-                        {
-                            if (i.ToString() == "NFSC.exe")
-                            {
-                                Log("NFS Carbon detected.", true);
-                                CurrentGame = (int)EdTypes.Game.Carbon;
-                                RefreshConfigView();
-                                ToggleButtons(true);
-                                break;
-                            }
-
-                            if (i.ToString() == "speed.exe")
-                            {
-                                Log("NFS Most Wanted detected.", true);
-                                CurrentGame = (int)EdTypes.Game.MostWanted;
-                                RefreshConfigView();
-                                ToggleButtons(true);
-                                break;
-                            }
-                        }
-
-                        if (CurrentGame == 0)
-                        {
-                            MessageBox.Show("Ed was unable to detect any game installations in this directory." + Environment.NewLine + "The directory doesn't contain any game executables.");
-                            Log("ERROR! Ed was unable to detect any game installations in this directory.");
-                            Log("The directory doesn't contain any game executables.", true);
-                            ToggleButtons(false);
-                            return;
-                        }
-                    }
+                    GetWhichGame(WorkingFolder);
                 }
                 catch (Exception ex)
                 {
@@ -554,10 +625,10 @@ namespace Ed
         private void addCarsFromConfigFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string ConfigPath = GetConfigPath();
-            
-            try
+
+            if (CurrentGame != 0) try
             {
-                DirectoryInfo di = new DirectoryInfo(ConfigPath);
+                DirectoryInfo di = new DirectoryInfo(GetConfigPath());
                 FileInfo[] INIFiles = di.GetFiles("*.ini");
 
                 int AddedCarCount = 0;
@@ -578,7 +649,7 @@ namespace Ed
 
                     foreach (FileInfo i in INIFiles)
                     {
-                        string INIFilePath = Path.Combine(ConfigPath, i.ToString());
+                        string INIFilePath = Path.Combine(GetConfigPath(), i.ToString());
 
                         if (i.Name == "config.ini")
                         {
@@ -590,19 +661,31 @@ namespace Ed
                             var Car = new EdTypes.CarTypeInfo();
                             var SpoilerType = new EdTypes.SlotType();
                             var Collision = new EdTypes.CarCollision();
-                            var Resource = new EdTypes.CarResource();
+                            
 
                             var IniReader = new IniFile(INIFilePath);
 
                             string XName = Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false));
 
-                            if (XName.Length > 13)
+                            if (CurrentGame == (int)EdTypes.Game.Undercover)
                             {
-                                MessageBox.Show("Car names cannot be longer than 13 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                Log("Car names cannot be longer than 13 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)));
-                                continue;
+                                if (XName.Length > 14)
+                                {
+                                    MessageBox.Show("Car names cannot be longer than 14 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    Log("Car names cannot be longer than 14 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)));
+                                    continue;
+                                }
                             }
-
+                            else
+                            {
+                                if (XName.Length > 13)
+                                {
+                                    MessageBox.Show("Car names cannot be longer than 13 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    Log("Car names cannot be longer than 13 characters. Skipping " + Path.GetFileNameWithoutExtension(INIFilePath).ToUpper(new CultureInfo("en-US", false)));
+                                    continue;
+                                }
+                            }
+                            
                             string ManuName = IniReader.GetValue("INFO", "Manufacturer");
 
                             if (ManuName.Length > 15)
@@ -625,17 +708,18 @@ namespace Ed
                             Array.Resize(ref Car.ManufacturerName, 16);
 
                             // Continue reading
-                            if (CurrentGame == (int)EdTypes.Game.Carbon)
+                            
+                            if (CurrentGame == (int)EdTypes.Game.ProStreet || CurrentGame == (int)EdTypes.Game.Undercover)
                             {
                                 Car.CarTypeNameHash = (uint)BinHash.Hash(XName);
                                 Car.HeadlightFOV = ToSingle(IniReader.GetDouble("INFO", "HeadlightFOV", 0.0f));
                                 Car.padHighPerformance = (byte)IniReader.GetInteger("INFO", "padHighPerformance", 0, byte.MinValue, byte.MaxValue);
                                 Car.NumAvailableSkinNumbers = (byte)IniReader.GetInteger("INFO", "NumAvailableSkinNumbers", 0, byte.MinValue, byte.MaxValue);
-                                Car.WhatGame = (byte)IniReader.GetInteger("INFO", "WhatGame", 1, byte.MinValue, byte.MaxValue);
+                                Car.WhatGame = (byte)IniReader.GetInteger("INFO", "WhatGame", 0xFF, byte.MinValue, byte.MaxValue);
                                 Car.ConvertableFlag = (byte)IniReader.GetInteger("INFO", "ConvertableFlag", 0, byte.MinValue, byte.MaxValue);
-                                Car.WheelOuterRadius = (byte)IniReader.GetInteger("INFO", "WheelOuterRadius", 26, byte.MinValue, byte.MaxValue);
-                                Car.WheelInnerRadiusMin = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMin", 17, byte.MinValue, byte.MaxValue);
-                                Car.WheelInnerRadiusMax = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMax", 20, byte.MinValue, byte.MaxValue);
+                                Car.WheelOuterRadius = (byte)IniReader.GetInteger("INFO", "WheelOuterRadius", 0, byte.MinValue, byte.MaxValue);
+                                Car.WheelInnerRadiusMin = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMin", 0, byte.MinValue, byte.MaxValue);
+                                Car.WheelInnerRadiusMax = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMax", 0, byte.MinValue, byte.MaxValue);
                                 Car.pad0 = (byte)IniReader.GetInteger("INFO", "pad0", 0, byte.MinValue, byte.MaxValue);
                                 Car.HeadlightPosition.x = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionX", 0.0f));
                                 Car.HeadlightPosition.y = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionY", 0.0f));
@@ -650,6 +734,32 @@ namespace Ed
                                 Car.InCarSteeringWheelRenderingOffset.z = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetZ", 0.0f));
                                 Car.InCarSteeringWheelRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetPad", 0.0f));
                             }
+
+                            if (CurrentGame == (int)EdTypes.Game.Carbon)
+                        {
+                            Car.CarTypeNameHash = (uint)BinHash.Hash(XName);
+                            Car.HeadlightFOV = ToSingle(IniReader.GetDouble("INFO", "HeadlightFOV", 0.0f));
+                            Car.padHighPerformance = (byte)IniReader.GetInteger("INFO", "padHighPerformance", 0, byte.MinValue, byte.MaxValue);
+                            Car.NumAvailableSkinNumbers = (byte)IniReader.GetInteger("INFO", "NumAvailableSkinNumbers", 0, byte.MinValue, byte.MaxValue);
+                            Car.WhatGame = (byte)IniReader.GetInteger("INFO", "WhatGame", 1, byte.MinValue, byte.MaxValue);
+                            Car.ConvertableFlag = (byte)IniReader.GetInteger("INFO", "ConvertableFlag", 0, byte.MinValue, byte.MaxValue);
+                            Car.WheelOuterRadius = (byte)IniReader.GetInteger("INFO", "WheelOuterRadius", 26, byte.MinValue, byte.MaxValue);
+                            Car.WheelInnerRadiusMin = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMin", 17, byte.MinValue, byte.MaxValue);
+                            Car.WheelInnerRadiusMax = (byte)IniReader.GetInteger("INFO", "WheelInnerRadiusMax", 20, byte.MinValue, byte.MaxValue);
+                            Car.pad0 = (byte)IniReader.GetInteger("INFO", "pad0", 0, byte.MinValue, byte.MaxValue);
+                            Car.HeadlightPosition.x = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionX", 0.0f));
+                            Car.HeadlightPosition.y = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionY", 0.0f));
+                            Car.HeadlightPosition.z = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionZ", 0.0f));
+                            Car.HeadlightPosition.pad = ToSingle(IniReader.GetDouble("INFO", "HeadlightPositionPad", 0.0f));
+                            Car.DriverRenderingOffset.x = ToSingle(IniReader.GetDouble("INFO", "DriverRenderingOffsetX", 0.0f));
+                            Car.DriverRenderingOffset.y = ToSingle(IniReader.GetDouble("INFO", "DriverRenderingOffsetY", 0.0f));
+                            Car.DriverRenderingOffset.z = ToSingle(IniReader.GetDouble("INFO", "DriverRenderingOffsetZ", 0.0f));
+                            Car.DriverRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "DriverRenderingOffsetPad", 0.0f));
+                            Car.InCarSteeringWheelRenderingOffset.x = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetX", 0.0f));
+                            Car.InCarSteeringWheelRenderingOffset.y = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetY", 0.0f));
+                            Car.InCarSteeringWheelRenderingOffset.z = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetZ", 0.0f));
+                            Car.InCarSteeringWheelRenderingOffset.pad = ToSingle(IniReader.GetDouble("INFO", "InCarSteeringWheelRenderingOffsetPad", 0.0f));
+                        }
 
                             if (CurrentGame == (int)EdTypes.Game.MostWanted)
                             {
@@ -732,7 +842,7 @@ namespace Ed
                                 Car.CarMemTypeHash = (uint)BinHash.Hash(IniReader.GetValue("INFO", "CarMemType", "Racing"));
                             }
 
-                            if (CurrentGame == (int)EdTypes.Game.Carbon)
+                            if (CurrentGame == (int)EdTypes.Game.Carbon || CurrentGame == (int)EdTypes.Game.ProStreet || CurrentGame == (int)EdTypes.Game.Undercover)
                             {
                                 Car.MaxInstances[0] = (byte)IniReader.GetInteger("INFO", "MaxInstances1", 0, byte.MinValue, byte.MaxValue);
                                 Car.MaxInstances[1] = (byte)IniReader.GetInteger("INFO", "MaxInstances2", 0, byte.MinValue, byte.MaxValue);
@@ -807,7 +917,7 @@ namespace Ed
                             Car.DefaultSkinNumber = (byte)IniReader.GetInteger("INFO", "DefaultSkinNumber", 1, byte.MinValue, byte.MaxValue);
                             Car.Skinnable = (byte)IniReader.GetInteger("INFO", "Skinnable", Car.UsageType == (int)EdTypes.CarUsageType.Racer ? 1 : 0, byte.MinValue, byte.MaxValue); // Checks usage type if not set in ini
                             Car.Padding = IniReader.GetInteger("INFO", "Padding");
-                            Car.DefaultBasePaint = (uint)BinHash.Hash(IniReader.GetValue("INFO", "DefaultBasePaint", "GLOSS_L1_COLOR17"));
+                            Car.DefaultBasePaint = (uint)BinHash.Hash(IniReader.GetValue("INFO", "DefaultBasePaint", CurrentGame == (int)EdTypes.Game.MostWanted ? "GLOSS_L1_COLOR01" : "GLOSS_L1_COLOR17"));
 
                             NewCarTypeInfoArray.Add(Car);
 
@@ -838,10 +948,29 @@ namespace Ed
                             // ----------------------------------------------------------------------
                             // Resources
 
-                            Resource.Label = IniReader.GetValue("RESOURCES", "Label", "");
-                            Resource.Name = IniReader.GetValue("RESOURCES", "Name", "");
+                            int NumberOfResources = IniReader.GetInteger("RESOURCES", "NumberOfResources", 0, 0);
                             
-                            NewResourcesList.Add(Resource);
+                            if (NumberOfResources == 0) // Old ini format
+                            {
+                                var Resource = new EdTypes.CarResource();
+
+                                Resource.Label = IniReader.GetValue("RESOURCES", "Label", "");
+                                Resource.Name = IniReader.GetValue("RESOURCES", "Name", "");
+
+                                if (!(String.IsNullOrEmpty(Resource.Label) || String.IsNullOrEmpty(Resource.Name))) NewResourcesList.Add(Resource);
+                            }
+                            else // New ini format with multiple resoruces support
+                            {
+                                for (int r=1; r<=NumberOfResources; r++)
+                                {
+                                    var Resource = new EdTypes.CarResource(); 
+
+                                    Resource.Label = IniReader.GetValue(String.Format("RESOURCE{0}", r), "Label", "");
+                                    Resource.Name = IniReader.GetValue(String.Format("RESOURCE{0}", r), "Name", "");
+
+                                    if (!(String.IsNullOrEmpty(Resource.Label) || String.IsNullOrEmpty(Resource.Name))) NewResourcesList.Add(Resource);
+                                }
+                            }
                             
                         }
                     }
@@ -960,79 +1089,313 @@ namespace Ed
 
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet)
+                    {
+                        // Work on Car Type Array
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), true);
+
+                        var CarInfoArray = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoArrayReader = new BinaryReader(CarInfoArray);
+                        var CarInfoArrayWriter = new BinaryWriter(CarInfoArray);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoArrayReader.BaseStream.Position = 0;
+                        ChunkID = CarInfoArrayReader.ReadUInt32();
+                        ChunkSize = CarInfoArrayReader.ReadUInt32();
+
+                        if (ChunkID != 0x00034600)
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"));
+                            return;
+                        }
+
+                        // Add new data
+                        int NumberOfCars = (int)(ChunkSize - 8) / 0xD0; // CarTypeID for the next car
+                        CarInfoArrayWriter.BaseStream.Position = CarInfoArrayWriter.BaseStream.Length;
+
+                        foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                        {
+                            if (Car.Type == -1) continue;
+
+                            CarInfoArrayWriter.BaseStream.Position = 16 + (Car.Type * 0xD0);
+
+                            CarInfoArrayWriter.Write(Car.CarTypeName);
+                            CarInfoArrayWriter.Write(Car.BaseModelName);
+                            CarInfoArrayWriter.Write(Car.GeometryFilename);
+                            CarInfoArrayWriter.Write(Car.CarTypeName);
+                            CarInfoArrayWriter.Write(Car.CarTypeNameHash);
+                            CarInfoArrayWriter.Write(Car.HeadlightFOV);
+                            CarInfoArrayWriter.Write(Car.padHighPerformance);
+                            CarInfoArrayWriter.Write(Car.NumAvailableSkinNumbers);
+                            CarInfoArrayWriter.Write(Car.WhatGame);
+                            CarInfoArrayWriter.Write(Car.ConvertableFlag);
+                            CarInfoArrayWriter.Write(Car.WheelOuterRadius);
+                            CarInfoArrayWriter.Write(Car.WheelInnerRadiusMin);
+                            CarInfoArrayWriter.Write(Car.WheelInnerRadiusMax);
+                            CarInfoArrayWriter.Write(Car.pad0);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.x);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.y);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.z);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.pad);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.x);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.y);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.z);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.pad);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.x);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.y);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.z);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.pad);
+                            CarInfoArrayWriter.Write(Car.CarTypeNameHash);
+                            CarInfoArrayWriter.Write(Car.UsageType);
+                            CarInfoArrayWriter.Write(Car.CarMemTypeHash);
+                            CarInfoArrayWriter.Write(Car.MaxInstances);
+                            CarInfoArrayWriter.Write(Car.WantToKeepLoaded);
+                            CarInfoArrayWriter.Write(Car.pad4);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[0]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[1]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[2]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[3]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[4]);
+                            CarInfoArrayWriter.Write(Car.AvailableSkinNumbers);
+                            CarInfoArrayWriter.Write(Car.DefaultSkinNumber);
+                            CarInfoArrayWriter.Write(Car.Skinnable);
+                            CarInfoArrayWriter.Write(Car.Padding);
+                            CarInfoArrayWriter.Write(Car.DefaultBasePaint);
+
+                            CarInfoArrayWriter.BaseStream.Position = CarInfoArrayWriter.BaseStream.Length;
+
+                            if (Car.Type < NumberOfCars) continue;
+
+                            // Increase car ID for the next car
+                            NumberOfCars++;
+
+                        }
+
+                        // Fix size in Chunk Header
+                        NewChunkSize = (uint)NumberOfCars * 0xD0 + 8;
+
+                        CarInfoArrayWriter.BaseStream.Position = 4; // Go to size
+                        CarInfoArrayWriter.Write(NewChunkSize); // Write new size
+
+                        CarInfoArrayWriter.Close();
+                        CarInfoArrayWriter.Dispose();
+                        CarInfoArrayReader.Close();
+                        CarInfoArrayReader.Dispose();
+                        CarInfoArray.Dispose();
+
+                    }
+
+                    if (CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+                        // Work on Car Type Array
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), true);
+
+                        var CarInfoArray = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoArrayReader = new BinaryReader(CarInfoArray);
+                        var CarInfoArrayWriter = new BinaryWriter(CarInfoArray);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoArrayReader.BaseStream.Position = 0;
+                        ChunkID = CarInfoArrayReader.ReadUInt32();
+                        ChunkSize = CarInfoArrayReader.ReadUInt32();
+
+                        if (ChunkID != 0x00034600)
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_ARRAY.bin"));
+                            return;
+                        }
+
+                        // Add new data
+                        int NumberOfCars = (int)(ChunkSize - 8) / 0x130; // CarTypeID for the next car
+                        CarInfoArrayWriter.BaseStream.Position = CarInfoArrayWriter.BaseStream.Length;
+
+                        foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                        {
+                            if (Car.Type == -1) continue;
+
+                            CarInfoArrayWriter.BaseStream.Position = 16 + (Car.Type * 0x130);
+
+                            CarInfoArrayWriter.Write(Car.CarTypeName);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                            CarInfoArrayWriter.Write(Car.BaseModelName);
+                            CarInfoArrayWriter.Write(Car.GeometryFilename);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                            CarInfoArrayWriter.Write(Car.CarTypeName);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                                CarInfoArrayWriter.Write(0);
+                             CarInfoArrayWriter.Write(Car.CarTypeNameHash);
+                            CarInfoArrayWriter.Write(Car.HeadlightFOV);
+                            CarInfoArrayWriter.Write(Car.padHighPerformance);
+                            CarInfoArrayWriter.Write(Car.NumAvailableSkinNumbers);
+                            CarInfoArrayWriter.Write(Car.WhatGame);
+                            CarInfoArrayWriter.Write(Car.ConvertableFlag);
+                            CarInfoArrayWriter.Write(Car.WheelOuterRadius);
+                            CarInfoArrayWriter.Write(Car.WheelInnerRadiusMin);
+                            CarInfoArrayWriter.Write(Car.WheelInnerRadiusMax);
+                            CarInfoArrayWriter.Write(Car.pad0);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.x);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.y);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.z);
+                            CarInfoArrayWriter.Write(Car.HeadlightPosition.pad);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.x);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.y);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.z);
+                            CarInfoArrayWriter.Write(Car.DriverRenderingOffset.pad);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.x);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.y);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.z);
+                            CarInfoArrayWriter.Write(Car.InCarSteeringWheelRenderingOffset.pad);
+                            CarInfoArrayWriter.Write(Car.CarTypeNameHash);
+                            CarInfoArrayWriter.Write(Car.UsageType);
+                            CarInfoArrayWriter.Write(Car.CarMemTypeHash);
+                            CarInfoArrayWriter.Write(Car.MaxInstances);
+                            CarInfoArrayWriter.Write(Car.WantToKeepLoaded);
+                            CarInfoArrayWriter.Write(Car.pad4);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[0]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[1]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[2]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[3]);
+                            CarInfoArrayWriter.Write(Car.MinTimeBetweenUses[4]);
+                            CarInfoArrayWriter.Write(Car.AvailableSkinNumbers);
+                            CarInfoArrayWriter.Write(Car.DefaultSkinNumber);
+                            CarInfoArrayWriter.Write(Car.Skinnable);
+                            CarInfoArrayWriter.Write(Car.Padding);
+                            CarInfoArrayWriter.Write(Car.DefaultBasePaint);
+
+                            CarInfoArrayWriter.BaseStream.Position = CarInfoArrayWriter.BaseStream.Length;
+
+                            if (Car.Type < NumberOfCars) continue;
+
+                            // Increase car ID for the next car
+                            NumberOfCars++;
+
+                        }
+
+                        // Fix size in Chunk Header
+                        NewChunkSize = (uint)NumberOfCars * 0x130 + 8;
+
+                        CarInfoArrayWriter.BaseStream.Position = 4; // Go to size
+                        CarInfoArrayWriter.Write(NewChunkSize); // Write new size
+
+                        CarInfoArrayWriter.Close();
+                        CarInfoArrayWriter.Dispose();
+                        CarInfoArrayReader.Close();
+                        CarInfoArrayReader.Dispose();
+                        CarInfoArray.Dispose();
+
+                    }
+
                     // -----------------------------------------------------
 
                     // SlotTypes (Spoiler Types)
 
                     if (CurrentGame == (int)EdTypes.Game.MostWanted)
+                {
+                    if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin")))
                     {
-                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin")))
-                        {
-                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Log("ERROR! Ed was unable to add cars into the game.");
-                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
-                            return;
-                        }
-                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), true);
-
-                        var CarInfoSlotTypes = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), FileMode.Open, FileAccess.ReadWrite);
-                        var CarInfoSlotTypesReader = new BinaryReader(CarInfoSlotTypes);
-                        var CarInfoSlotTypesWriter = new BinaryWriter(CarInfoSlotTypes);
-
-                        // Get ID and Size to verify chunk
-                        CarInfoSlotTypesReader.BaseStream.Position = 0;
-                        ChunkID = CarInfoSlotTypesReader.ReadUInt32();
-                        ChunkSize = CarInfoSlotTypesReader.ReadUInt32();
-
-                        if (ChunkID != 0x00034607)
-                        {
-                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Log("ERROR! Ed was unable to add cars into the game.");
-                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
-                            return;
-                        }
-
-                        // Add new data
-                        int NumberOfSpoilers = 0;
-                        CarInfoSlotTypesWriter.BaseStream.Position = CarInfoSlotTypesWriter.BaseStream.Length;
-
-                        foreach (EdTypes.SlotType Spoiler in NewSpoilerTypes)
-                        {
-                            // Skip if types are default
-                            if ((Spoiler.SpoilerHash == (uint)BinHash.Hash("SPOILER"))) continue;
-
-                            CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash);
-                            CarInfoSlotTypesWriter.Write(Spoiler.CarSlotID);
-                            CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash2);
-                            CarInfoSlotTypesWriter.Write(Spoiler.SpoilerHash);
-
-                            // Increase spoiler count for chunk size calculation
-                            NumberOfSpoilers++;
-                        }
-
-                        // Fix size in Chunk Header
-                        NewChunkSize = (uint)(ChunkSize + NumberOfSpoilers * 0x10);
-
-                        // Fix padding
-                        CarInfoSlotTypesWriter.BaseStream.Position = CarInfoSlotTypesWriter.BaseStream.Length;
-                        PaddingDifference = (int)(NewChunkSize % 16);
-
-                        while (PaddingDifference != 8)
-                        {
-                            CarInfoSlotTypesWriter.Write((byte)0);
-                            PaddingDifference = (PaddingDifference + 1) % 16;
-                            NewChunkSize++;
-                        }
-
-                        CarInfoSlotTypesWriter.BaseStream.Position = 4; // Go to size
-                        CarInfoSlotTypesWriter.Write(NewChunkSize); // Write new size
-
-                        CarInfoSlotTypesWriter.Close();
-                        CarInfoSlotTypesWriter.Dispose();
-                        CarInfoSlotTypesReader.Close();
-                        CarInfoSlotTypesReader.Dispose();
-                        CarInfoSlotTypes.Dispose();
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
+                        return;
                     }
+                    File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), true);
+
+                    var CarInfoSlotTypes = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), FileMode.Open, FileAccess.ReadWrite);
+                    var CarInfoSlotTypesReader = new BinaryReader(CarInfoSlotTypes);
+                    var CarInfoSlotTypesWriter = new BinaryWriter(CarInfoSlotTypes);
+
+                    // Get ID and Size to verify chunk
+                    CarInfoSlotTypesReader.BaseStream.Position = 0;
+                    ChunkID = CarInfoSlotTypesReader.ReadUInt32();
+                    ChunkSize = CarInfoSlotTypesReader.ReadUInt32();
+
+                    if (ChunkID != 0x00034607)
+                    {
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
+                        return;
+                    }
+
+                    // Add new data
+                    int NumberOfSpoilers = 0;
+                    CarInfoSlotTypesWriter.BaseStream.Position = CarInfoSlotTypesWriter.BaseStream.Length;
+
+                    foreach (EdTypes.SlotType Spoiler in NewSpoilerTypes)
+                    {
+                        // Skip if types are default
+                        if ((Spoiler.SpoilerHash == (uint)BinHash.Hash("SPOILER"))) continue;
+
+                        CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash);
+                        CarInfoSlotTypesWriter.Write(Spoiler.CarSlotID);
+                        CarInfoSlotTypesWriter.Write(Spoiler.CarTypeNameHash2);
+                        CarInfoSlotTypesWriter.Write(Spoiler.SpoilerHash);
+
+                        // Increase spoiler count for chunk size calculation
+                        NumberOfSpoilers++;
+                    }
+
+                    // Fix size in Chunk Header
+                    NewChunkSize = (uint)(ChunkSize + NumberOfSpoilers * 0x10);
+
+                    // Fix padding
+                    CarInfoSlotTypesWriter.BaseStream.Position = CarInfoSlotTypesWriter.BaseStream.Length;
+                    PaddingDifference = (int)(NewChunkSize % 16);
+
+                    while (PaddingDifference != 8)
+                    {
+                        CarInfoSlotTypesWriter.Write((byte)0);
+                        PaddingDifference = (PaddingDifference + 1) % 16;
+                        NewChunkSize++;
+                    }
+
+                    CarInfoSlotTypesWriter.BaseStream.Position = 4; // Go to size
+                    CarInfoSlotTypesWriter.Write(NewChunkSize); // Write new size
+
+                    CarInfoSlotTypesWriter.Close();
+                    CarInfoSlotTypesWriter.Dispose();
+                    CarInfoSlotTypesReader.Close();
+                    CarInfoSlotTypesReader.Dispose();
+                    CarInfoSlotTypes.Dispose();
+                }
 
                     if (CurrentGame == (int)EdTypes.Game.Carbon)
                     {
@@ -1110,11 +1473,210 @@ namespace Ed
 
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet)
+                    {
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), true);
+
+                    }
+
+                    if (CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_SLOTTYPES.bin"), true);
+                    }
+
                     // -----------------------------------------------------
 
                     // CarPart Chunk 5: Car XName Hash List
 
                     if (CurrentGame == (int)EdTypes.Game.MostWanted)
+                {
+
+                    Directory.CreateDirectory(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART"));
+
+                    if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin")))
+                    {
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"));
+                        return;
+                    }
+                    File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), true);
+
+                    var CarInfoCarParts5 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), FileMode.Open, FileAccess.ReadWrite);
+                    var CarInfoCarParts5Reader = new BinaryReader(CarInfoCarParts5);
+                    var CarInfoCarParts5Writer = new BinaryWriter(CarInfoCarParts5);
+
+                    // Get ID and Size to verify chunk
+                    CarInfoCarParts5Reader.BaseStream.Position = 0;
+                    ChunkID = CarInfoCarParts5Reader.ReadUInt32();
+                    ChunkSize = CarInfoCarParts5Reader.ReadUInt32();
+
+                    if (ChunkID != 0x0003460B)
+                    {
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"));
+                        return;
+                    }
+
+                    // Add new data
+                    int NumberOfXNames = (int)ChunkSize / 4;
+                    int NumberOfAddedXNames = 0;
+                    CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+
+                    foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                    {
+                        // Skip if data already exists
+                        bool DoesXNameExist = false;
+
+                        CarInfoCarParts5Reader.BaseStream.Position = 8; // skip ID and size
+
+                        while (CarInfoCarParts5Reader.BaseStream.Position < CarInfoCarParts5Reader.BaseStream.Length)
+                        {
+                            if (Car.CarTypeNameHash == CarInfoCarParts5Reader.ReadUInt32())
+                            {
+                                DoesXNameExist = true;
+                                break;
+                            }
+                        }
+                        if (DoesXNameExist) continue;
+
+                        // Move to the end and write data
+                        CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+                        CarInfoCarParts5Writer.Write(Car.CarTypeNameHash);
+
+                        // Increase count for chunk size calculation
+                        NumberOfXNames++;
+                        NumberOfAddedXNames++;
+                    }
+
+                    // Fix size in Chunk Header
+                    NewChunkSize = (uint)(NumberOfXNames * 4);
+
+                    // Fix padding
+                    CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+                    PaddingDifference = (int)(NewChunkSize % 16);
+
+                    while (PaddingDifference != 0xC)
+                    {
+                        CarInfoCarParts5Writer.Write((byte)0);
+                        PaddingDifference = (PaddingDifference + 1) % 16;
+                        NewChunkSize++;
+                    }
+
+                    CarInfoCarParts5Writer.BaseStream.Position = 4; // Go to size
+                    CarInfoCarParts5Writer.Write(NewChunkSize); // Write new size
+
+                    CarInfoCarParts5Writer.Close();
+                    CarInfoCarParts5Writer.Dispose();
+                    CarInfoCarParts5Reader.Close();
+                    CarInfoCarParts5Reader.Dispose();
+                    CarInfoCarParts5.Dispose();
+
+                }
+
+                    if (CurrentGame == (int)EdTypes.Game.Carbon)
+                    {
+
+                        Directory.CreateDirectory(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART"));
+
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), true);
+
+                        var CarInfoCarParts5 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoCarParts5Reader = new BinaryReader(CarInfoCarParts5);
+                        var CarInfoCarParts5Writer = new BinaryWriter(CarInfoCarParts5);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoCarParts5Reader.BaseStream.Position = 0;
+                        ChunkID = CarInfoCarParts5Reader.ReadUInt32();
+                        ChunkSize = CarInfoCarParts5Reader.ReadUInt32();
+
+                        if (ChunkID != 0x0003460B)
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\5_0003460B.bin"));
+                            return;
+                        }
+
+                        // Add new data
+                        int NumberOfXNames = (int)ChunkSize / 4;
+                        int NumberOfAddedXNames = 0;
+                        CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+
+                        foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                        {
+                            // Skip if data already exists
+                            bool DoesXNameExist = false;
+
+                            CarInfoCarParts5Reader.BaseStream.Position = 8; // skip ID and size
+
+                            while (CarInfoCarParts5Reader.BaseStream.Position < CarInfoCarParts5Reader.BaseStream.Length)
+                            {
+                                if (Car.CarTypeNameHash == CarInfoCarParts5Reader.ReadUInt32())
+                                {
+                                    DoesXNameExist = true;
+                                    break;
+                                }
+                            }
+                            if (DoesXNameExist) continue;
+
+                            // Move to the end and write data
+                            CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+                            CarInfoCarParts5Writer.Write(Car.CarTypeNameHash);
+
+                            // Increase count for chunk size calculation
+                            NumberOfXNames++;
+                            NumberOfAddedXNames++;
+                        }
+
+                        // Fix size in Chunk Header
+                        NewChunkSize = (uint)(NumberOfXNames * 4);
+
+                        // Fix padding
+                        CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
+                        PaddingDifference = (int)(NewChunkSize % 16);
+
+                        while (PaddingDifference != 8)
+                        {
+                            CarInfoCarParts5Writer.Write((byte)0);
+                            PaddingDifference = (PaddingDifference + 1) % 16;
+                            NewChunkSize++;
+                        }
+
+                        CarInfoCarParts5Writer.BaseStream.Position = 4; // Go to size
+                        CarInfoCarParts5Writer.Write(NewChunkSize); // Write new size
+
+                        CarInfoCarParts5Writer.Close();
+                        CarInfoCarParts5Writer.Dispose();
+                        CarInfoCarParts5Reader.Close();
+                        CarInfoCarParts5Reader.Dispose();
+                        CarInfoCarParts5.Dispose();
+
+                    }
+
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet)
                     {
 
                         Directory.CreateDirectory(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART"));
@@ -1201,7 +1763,7 @@ namespace Ed
 
                     }
 
-                    if (CurrentGame == (int)EdTypes.Game.Carbon)
+                    if (CurrentGame == (int)EdTypes.Game.Undercover)
                     {
 
                         Directory.CreateDirectory(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART"));
@@ -1270,7 +1832,7 @@ namespace Ed
                         CarInfoCarParts5Writer.BaseStream.Position = CarInfoCarParts5Writer.BaseStream.Length;
                         PaddingDifference = (int)(NewChunkSize % 16);
 
-                        while (PaddingDifference != 8)
+                        while (PaddingDifference != 0x4)
                         {
                             CarInfoCarParts5Writer.Write((byte)0);
                             PaddingDifference = (PaddingDifference + 1) % 16;
@@ -1493,6 +2055,178 @@ namespace Ed
 
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet)
+                    {
+
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), true);
+
+                        var CarInfoCarParts6 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoCarParts6Reader = new BinaryReader(CarInfoCarParts6);
+                        var CarInfoCarParts6Writer = new BinaryWriter(CarInfoCarParts6);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoCarParts6Reader.BaseStream.Position = 0;
+                        ChunkID = CarInfoCarParts6Reader.ReadUInt32();
+                        ChunkSize = CarInfoCarParts6Reader.ReadUInt32();
+
+                        if (ChunkID != 0x00034604) // Car Parts List
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"));
+                            return;
+                        }
+
+                        // Add new data
+                        int NumberOfRacerPartLists = 0;
+
+                        // Get last used id
+                        CarInfoCarParts6Reader.BaseStream.Position = CarInfoCarParts6Reader.BaseStream.Length - 0xF;
+                        CarID = CarInfoCarParts6Reader.ReadByte();
+                        CarInfoCarParts6Reader.BaseStream.Position += 0xE;
+
+
+                        CarInfoCarParts6Writer.BaseStream.Position = CarInfoCarParts6Writer.BaseStream.Length;
+                        CarID++;
+
+                        foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                        {
+                            // Skip if data already exists
+                            if ((GetCarPartIDFromResources(Encoding.ASCII.GetString(Car.CarTypeName)) + NumberOfRacerPartLists) < CarID) continue;
+
+                            
+                            foreach (ushort u in CarPartIDsProStreet.Racer)
+                            {
+                                CarInfoCarParts6Writer.Write((byte)0);
+                                CarInfoCarParts6Writer.Write(CarID);
+                                CarInfoCarParts6Writer.Write(u);
+                                CarInfoCarParts6Writer.Write(0);
+                                CarInfoCarParts6Writer.Write(0);
+                                CarInfoCarParts6Writer.Write(0);
+                            }
+
+                            NumberOfRacerPartLists++;
+                            CarID++;
+                        }
+
+                        // Fix size in Chunk Header
+                        NewChunkSize = (uint)(ChunkSize + NumberOfRacerPartLists * 0x12D0);
+
+                        // Fix padding
+                        //CarInfoCarParts6Writer.BaseStream.Position = CarInfoCarParts6Writer.BaseStream.Length;
+                        PaddingDifference = (int)(NewChunkSize % 16);
+
+                        while (PaddingDifference != 0)
+                        {
+                            CarInfoCarParts6Writer.Write((byte)0);
+                            PaddingDifference = (PaddingDifference + 1) % 16;
+                            NewChunkSize++;
+                        }
+
+                        CarInfoCarParts6Writer.BaseStream.Position = 4; // Go to size
+                        CarInfoCarParts6Writer.Write(NewChunkSize); // Write new size
+
+                        CarInfoCarParts6Writer.Close();
+                        CarInfoCarParts6Writer.Dispose();
+                        CarInfoCarParts6Reader.Close();
+                        CarInfoCarParts6Reader.Dispose();
+                        CarInfoCarParts6.Dispose();
+
+                    }
+
+                    if (CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), true);
+
+                        var CarInfoCarParts6 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoCarParts6Reader = new BinaryReader(CarInfoCarParts6);
+                        var CarInfoCarParts6Writer = new BinaryWriter(CarInfoCarParts6);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoCarParts6Reader.BaseStream.Position = 0;
+                        ChunkID = CarInfoCarParts6Reader.ReadUInt32();
+                        ChunkSize = CarInfoCarParts6Reader.ReadUInt32();
+
+                        if (ChunkID != 0x00034604) // Car Parts List
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\6_00034604.bin"));
+                            return;
+                        }
+
+                        // Add new data
+                        int NumberOfRacerPartLists = 0;
+
+                        // Get last used id
+                        CarInfoCarParts6Reader.BaseStream.Position = CarInfoCarParts6Reader.BaseStream.Length - 0xF;
+                        CarID = CarInfoCarParts6Reader.ReadByte();
+                        CarInfoCarParts6Reader.BaseStream.Position += 0xE;
+
+
+                        CarInfoCarParts6Writer.BaseStream.Position = CarInfoCarParts6Writer.BaseStream.Length;
+                        CarID++;
+
+                        foreach (EdTypes.CarTypeInfo Car in NewCarTypeInfoArray)
+                        {
+                            // Skip if data already exists
+                            if ((GetCarPartIDFromResources(Encoding.ASCII.GetString(Car.CarTypeName)) + NumberOfRacerPartLists) < CarID) continue;
+
+
+                            foreach (ushort u in CarPartIDsUndercover.Racer)
+                            {
+                                CarInfoCarParts6Writer.Write((byte)0);
+                                CarInfoCarParts6Writer.Write(CarID);
+                                CarInfoCarParts6Writer.Write(u);
+                                CarInfoCarParts6Writer.Write(0);
+                                CarInfoCarParts6Writer.Write(0);
+                                CarInfoCarParts6Writer.Write(0);
+                            }
+
+                            NumberOfRacerPartLists++;
+                            CarID++;
+                        }
+
+                        // Fix size in Chunk Header
+                        NewChunkSize = (uint)(ChunkSize + NumberOfRacerPartLists * 0xAF0);
+
+                        // Fix padding
+                        //CarInfoCarParts6Writer.BaseStream.Position = CarInfoCarParts6Writer.BaseStream.Length;
+                        PaddingDifference = (int)(NewChunkSize % 16);
+
+                        while (PaddingDifference != 0)
+                        {
+                            CarInfoCarParts6Writer.Write((byte)0);
+                            PaddingDifference = (PaddingDifference + 1) % 16;
+                            NewChunkSize++;
+                        }
+
+                        CarInfoCarParts6Writer.BaseStream.Position = 4; // Go to size
+                        CarInfoCarParts6Writer.Write(NewChunkSize); // Write new size
+
+                        CarInfoCarParts6Writer.Close();
+                        CarInfoCarParts6Writer.Dispose();
+                        CarInfoCarParts6Reader.Close();
+                        CarInfoCarParts6Reader.Dispose();
+                        CarInfoCarParts6.Dispose();
+
+                    }
+
                     // -----------------------------------------------------
 
                     // CarPart Chunk 0: Zero (Info) Chunk
@@ -1500,48 +2234,48 @@ namespace Ed
                     if (CurrentGame == (int)EdTypes.Game.MostWanted)
                     {
 
-                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin")))
-                        {
-                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Log("ERROR! Ed was unable to add cars into the game.");
-                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
-                            return;
-                        }
-                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), true);
-
-                        var CarInfoCarParts0 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), FileMode.Open, FileAccess.ReadWrite);
-                        var CarInfoCarParts0Reader = new BinaryReader(CarInfoCarParts0);
-                        var CarInfoCarParts0Writer = new BinaryWriter(CarInfoCarParts0);
-
-                        // Get ID and Size to verify chunk
-                        CarInfoCarParts0Reader.BaseStream.Position = 0;
-                        ChunkID = CarInfoCarParts0Reader.ReadUInt32();
-                        ChunkSize = CarInfoCarParts0Reader.ReadUInt32();
-
-                        if (ChunkID != 0x00034603) // Car Parts List
-                        {
-                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Log("ERROR! Ed was unable to add cars into the game.");
-                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
-                            return;
-                        }
-
-                        // Write new CarID here
-                        CarInfoCarParts0Writer.BaseStream.Position = 0x30;
-                        CarInfoCarParts0Writer.Write(CarID);
-
-                        // Write new Parts Count here
-                        CarInfoCarParts0Writer.BaseStream.Position = 0x40;
-                        CarInfoCarParts0Writer.Write(NewChunkSize / 0xE);
-
-
-                        CarInfoCarParts0Writer.Close();
-                        CarInfoCarParts0Writer.Dispose();
-                        CarInfoCarParts0Reader.Close();
-                        CarInfoCarParts0Reader.Dispose();
-                        CarInfoCarParts0.Dispose();
-
+                    if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin")))
+                    {
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
+                        return;
                     }
+                    File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), true);
+
+                    var CarInfoCarParts0 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), FileMode.Open, FileAccess.ReadWrite);
+                    var CarInfoCarParts0Reader = new BinaryReader(CarInfoCarParts0);
+                    var CarInfoCarParts0Writer = new BinaryWriter(CarInfoCarParts0);
+
+                    // Get ID and Size to verify chunk
+                    CarInfoCarParts0Reader.BaseStream.Position = 0;
+                    ChunkID = CarInfoCarParts0Reader.ReadUInt32();
+                    ChunkSize = CarInfoCarParts0Reader.ReadUInt32();
+
+                    if (ChunkID != 0x00034603) // Car Parts List
+                    {
+                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log("ERROR! Ed was unable to add cars into the game.");
+                        Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
+                        return;
+                    }
+
+                    // Write new CarID here
+                    CarInfoCarParts0Writer.BaseStream.Position = 0x30;
+                    CarInfoCarParts0Writer.Write(CarID);
+
+                    // Write new Parts Count here
+                    CarInfoCarParts0Writer.BaseStream.Position = 0x40;
+                    CarInfoCarParts0Writer.Write(NewChunkSize / 0xE);
+
+
+                    CarInfoCarParts0Writer.Close();
+                    CarInfoCarParts0Writer.Dispose();
+                    CarInfoCarParts0Reader.Close();
+                    CarInfoCarParts0Reader.Dispose();
+                    CarInfoCarParts0.Dispose();
+
+                }
                     
                     if (CurrentGame == (int)EdTypes.Game.Carbon)
                     {
@@ -1589,18 +2323,64 @@ namespace Ed
 
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet || CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+
+                        if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin")))
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
+                            return;
+                        }
+                        File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), true);
+
+                        var CarInfoCarParts0 = new FileStream(Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), FileMode.Open, FileAccess.ReadWrite);
+                        var CarInfoCarParts0Reader = new BinaryReader(CarInfoCarParts0);
+                        var CarInfoCarParts0Writer = new BinaryWriter(CarInfoCarParts0);
+
+                        // Get ID and Size to verify chunk
+                        CarInfoCarParts0Reader.BaseStream.Position = 0;
+                        ChunkID = CarInfoCarParts0Reader.ReadUInt32();
+                        ChunkSize = CarInfoCarParts0Reader.ReadUInt32();
+
+                        if (ChunkID != 0x00034603) // Car Parts List
+                        {
+                            MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file has an incorrect header: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Log("ERROR! Ed was unable to add cars into the game.");
+                            Log("Resource file has an incorrect header: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\0_00034603.bin"));
+                            return;
+                        }
+
+                        // Write new CarID here
+                        CarInfoCarParts0Writer.BaseStream.Position = 0x30;
+                        CarInfoCarParts0Writer.Write(CarID);
+
+                        // Write new Parts Count here
+                        CarInfoCarParts0Writer.BaseStream.Position = 0x40;
+                        CarInfoCarParts0Writer.Write(NewChunkSize / 16);
+
+
+                        CarInfoCarParts0Writer.Close();
+                        CarInfoCarParts0Writer.Dispose();
+                        CarInfoCarParts0Reader.Close();
+                        CarInfoCarParts0Reader.Dispose();
+                        CarInfoCarParts0.Dispose();
+
+                    }
+
                     // -----------------------------------------------------
 
                     // CarPart Chunks : Copy the rest and merge
-                        
+
                     // 1
                     if (!File.Exists(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin")))
-                    {
-                        MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Log("ERROR! Ed was unable to add cars into the game.");
-                        Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"));
-                        return;
-                    }
+                {
+                    MessageBox.Show("Ed was unable to add cars into the game." + Environment.NewLine + "Resource file cannot be found: " + Environment.NewLine + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"), "Ed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Log("ERROR! Ed was unable to add cars into the game.");
+                    Log("Resource file cannot be found: " + Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"));
+                    return;
+                }
                     File.Copy(Path.Combine(GetResourcesPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"), Path.Combine(GetTempPath(), @"Global\BCHUNK_CARINFO_CARPART\1_00034606.bin"), true);
 
                     // 2
@@ -1710,8 +2490,22 @@ namespace Ed
                         var NewCollisionFile = File.Open(Path.Combine(GetTempPath(), @"Global\BCHUNK_BOUNDS\" + Coll.CopyTo + ".bin"), FileMode.Open, FileAccess.Write);
                         var NewCollisionFileWriter = new BinaryWriter(NewCollisionFile);
 
-                        NewCollisionFileWriter.BaseStream.Position = 16;
-                        NewCollisionFileWriter.Write(JenkinsHash.getHash32(Coll.CopyTo)); // Write Jenkins hash of the car folder.
+                        if (CurrentGame == (int)EdTypes.Game.Undercover)
+                        {
+                            NewCollisionFileWriter.BaseStream.Position = 0x40;
+                            NewCollisionFileWriter.Write(JenkinsHash.getHash32(Coll.CopyTo)); // Write Jenkins hash of the car folder.
+
+                            NewCollisionFileWriter.BaseStream.Position = 0x70;
+                            byte[] CollCopyToGetXName = Encoding.ASCII.GetBytes(Coll.CopyTo); // Write XNAME
+                            Array.Resize(ref CollCopyToGetXName, 0x10);
+                            NewCollisionFileWriter.Write(CollCopyToGetXName);
+                        }
+                        else
+                        {
+                            NewCollisionFileWriter.BaseStream.Position = 16;
+                            NewCollisionFileWriter.Write(JenkinsHash.getHash32(Coll.CopyTo)); // Write Jenkins hash of the car folder.
+                        }
+                        
 
                         NewCollisionFileWriter.Close();
                         NewCollisionFileWriter.Dispose();
@@ -1750,7 +2544,16 @@ namespace Ed
 
                         CarCollMergedFileSize += buf.Length;
                     }
+                    /*
+                    PaddingDifference = (int)(CarCollMergedFileSize % 16);
 
+                    while (PaddingDifference != 0)
+                    {
+                        CarCollFileMergedWriter.Write((byte)0);
+                        PaddingDifference = (PaddingDifference + 1) % 16;
+                        CarCollMergedFileSize++;
+                    }
+                    */
                     CarCollFileMergedWriter.BaseStream.Position = 4;
                     CarCollFileMergedWriter.Write(CarCollMergedFileSize);
 
@@ -1774,7 +2577,8 @@ namespace Ed
                     }
 
                     string GlobalBPath = Path.Combine(WorkingFolder, @"Global\GlobalB.lzc");
-                        
+                    string GlobalBBUNPath = Path.Combine(WorkingFolder, @"Global\GlobalB.bun");
+
                     // Make a backup (or restore if it exists)
                     if (!DisableBackups)
                     {
@@ -1782,10 +2586,15 @@ namespace Ed
                         else if (AutoRestoreGlobalB) File.Copy(GlobalBPath + ".edbackup", GlobalBPath, true);
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet || CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+                        if (File.Exists(GlobalBBUNPath)) File.Copy(GlobalBBUNPath, GlobalBPath, true);
+                    }
+
                     // Decompress GlobalB if it's in JDLZ format
                     byte[] GlobalBLZC = File.ReadAllBytes(GlobalBPath);
                     byte[] GlobalBBUN = JDLZ.decompress(GlobalBLZC);
-
+                        
                     var GlobalB = File.Open(GlobalBPath, FileMode.Open, FileAccess.ReadWrite);
                     var GlobalBReader = new BinaryReader(new MemoryStream(GlobalBBUN)); // Read from memory
                     var GlobalBWriter = new BinaryWriter(GlobalB); // Write to file
@@ -2178,6 +2987,168 @@ namespace Ed
 
                     }
 
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet
+                        || CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+                        Directory.CreateDirectory(Path.Combine(GetTempPath(), @"Languages"));
+
+                        DirectoryInfo TempLanguages = new DirectoryInfo(Path.Combine(GetResourcesPath(), @"Languages"));
+                        FileInfo[] TempLanguageBINFiles = TempLanguages.GetFiles("*_Global.bin");
+
+                        // Add required strings
+                        foreach (FileInfo LangFile in TempLanguageBINFiles)
+                        {
+                            File.Copy(Path.Combine(GetResourcesPath(), @"Languages", LangFile.Name), Path.Combine(GetTempPath(), @"Languages", LangFile.Name), true);
+
+                            if (!File.Exists(Path.Combine(GetTempPath(), @"Languages", LangFile.Name))) // Skip adding Language if data cannot be found
+                            {
+                                continue;
+                            }
+
+                            byte[] LangFileBuffer = File.ReadAllBytes(Path.Combine(GetTempPath(), @"Languages\" + LangFile.Name));
+                            var LangFileMem = new MemoryStream(LangFileBuffer);
+                            var LangFileReader = new BinaryReader(LangFileMem);
+
+                            var NewLangFile = File.Open(Path.Combine(GetTempPath(), @"Languages\" + LangFile.Name), FileMode.Open, FileAccess.Write);
+                            var NewLangFileWriter = new BinaryWriter(NewLangFile);
+
+                            // Rebuild new file with added info
+
+                            var Language = new LanguageFile();
+                            LangFileReader.BaseStream.Position = 0;
+
+                            // Read basic info
+                            Language.ChunkID = LangFileReader.ReadInt32();
+                            Language.ChunkSize = LangFileReader.ReadInt32();
+                            Language.NumberOfEntries = LangFileReader.ReadInt32();
+                            Language.HashBlockPosition = LangFileReader.ReadInt32();
+                            Language.TextBlockPosition = LangFileReader.ReadInt32();
+                            Language.LanguageFileType = LangFileReader.ReadBytes(16);
+
+                            var HashList = new List<LanguageFile.HashInfo>();
+
+                            LangFileReader.BaseStream.Position = 8 + Language.HashBlockPosition;
+
+                            for (int l = 0; l < Language.NumberOfEntries; l++)
+                            {
+                                var AHashInfo = new LanguageFile.HashInfo();
+
+                                AHashInfo.StringHash = LangFileReader.ReadUInt32();
+                                AHashInfo.OffsetInTextBlock = LangFileReader.ReadUInt32();
+
+                                HashList.Add(AHashInfo);
+                            }
+
+                            var CurrentTextBlock = LangFileReader.ReadBytes((Language.ChunkSize - Language.TextBlockPosition));
+                            LangFileReader.BaseStream.Position = Language.ChunkSize + 8;
+                            var UnkData2 = LangFileReader.ReadBytes((int)(LangFileReader.BaseStream.Length - LangFileReader.BaseStream.Position)); // Unknown Data after strings
+
+                            var ByteArrayForNewStrings = new List<byte>();
+
+                            foreach (EdTypes.CarResource CarRes in NewResourcesList)
+                            {
+                                if (string.IsNullOrEmpty(CarRes.Label) || string.IsNullOrEmpty(CarRes.Name)) continue;
+
+                                var AHashInfo = new LanguageFile.HashInfo();
+                                AHashInfo.StringHash = (uint)BinHash.Hash(CarRes.Label);
+                                AHashInfo.OffsetInTextBlock = (uint)(Language.ChunkSize - Language.TextBlockPosition); // The address string will start from
+
+                                if (!HashList.Exists(x => x.StringHash == AHashInfo.StringHash))
+                                {
+                                    HashList.Add(AHashInfo);
+                                    Language.NumberOfEntries++;
+                                    Language.TextBlockPosition += 8;
+                                    Language.ChunkSize += 8;
+
+                                    if (LangFile.Name.ToUpper(new CultureInfo("en-US", false)) == "LABELS_GLOBAL.BIN")
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Label)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Label).Count() + 1;
+                                    }
+                                    else
+                                    {
+                                        ByteArrayForNewStrings.AddRange(Encoding.UTF8.GetBytes(CarRes.Name)); // String files are coded as UTF-8
+                                        ByteArrayForNewStrings.Add(0);
+                                        Language.ChunkSize += Encoding.UTF8.GetBytes(CarRes.Name).Count() + 1;
+                                    }
+                                }
+                            }
+
+                            // Sort by hash
+                            HashList.Sort((x, y) => x.StringHash.CompareTo(y.StringHash));
+
+                            // Start Writing New File
+                            NewLangFileWriter.BaseStream.Position = 0;
+
+                            NewLangFileWriter.Write(Language.ChunkID);
+                            NewLangFileWriter.Write(Language.ChunkSize);
+                            NewLangFileWriter.Write(Language.NumberOfEntries);
+                            NewLangFileWriter.Write(Language.HashBlockPosition);
+                            NewLangFileWriter.Write(Language.TextBlockPosition);
+                            NewLangFileWriter.Write(Language.LanguageFileType);
+
+                            // Write hash block
+                            foreach (LanguageFile.HashInfo i in HashList)
+                            {
+                                NewLangFileWriter.Write(i.StringHash);
+                                NewLangFileWriter.Write(i.OffsetInTextBlock);
+                            }
+
+                            // Read original string info
+                            NewLangFileWriter.Write(CurrentTextBlock);
+
+                            foreach (byte i in ByteArrayForNewStrings)
+                            {
+                                NewLangFileWriter.Write(i);
+                            }
+
+                            // Fix padding
+                            NewLangFileWriter.BaseStream.Position = NewLangFileWriter.BaseStream.Length;
+                            PaddingDifference = (Language.ChunkSize % 4);
+
+                            while (PaddingDifference != 0)
+                            {
+                                NewLangFileWriter.Write((byte)0);
+                                PaddingDifference = (PaddingDifference + 1) % 4;
+                                Language.ChunkSize++;
+                            }
+
+                            // Fix chunk size
+                            NewLangFileWriter.BaseStream.Position = 4;
+                            NewLangFileWriter.Write(Language.ChunkSize);
+
+                            // Write the rest of the data
+                            NewLangFileWriter.BaseStream.Position = Language.ChunkSize + 8;
+                            NewLangFileWriter.Write(UnkData2);
+
+                            // Close streams
+                            LangFileReader.Close();
+                            LangFileReader.Dispose();
+
+                            LangFileMem.Close();
+                            LangFileMem.Dispose();
+
+                            NewLangFileWriter.Close();
+                            NewLangFileWriter.Dispose();
+
+                            NewLangFile.Close();
+                            NewLangFile.Dispose();
+
+                            // Copy the files in
+                            // Make a backup
+                            if (!DisableBackups)
+                            {
+                                if ((!File.Exists(Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name + ".edbackup"))) && File.Exists(Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name)))
+                                    File.Copy(Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name), Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name + ".edbackup"), true);
+                            }
+                            // Copy
+                            File.Copy(Path.Combine(GetTempPath(), @"Languages\" + LangFile.Name), Path.Combine(WorkingFolder, @"Languages\" + LangFile.Name), true);
+                            Log("Successfully rebuilt " + LangFile.Name + " file.");
+                        }
+
+                    }
+
                     // -----------------------------------------------------
 
                     // Rebuild TPK file with new textures
@@ -2492,13 +3463,21 @@ namespace Ed
                             IniWriter.Dispose();
                         }
 
-                        // Finally rebuild the file
-                        Process process = new Process();
-                        process.StartInfo.FileName = "XNFSTPKTool.exe";
-                        process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
-                        process.StartInfo.Arguments = @"-w2 FrontEndTextures\729181AD.ini FrontEndTextures.tpk";
-                        process.Start();
-                        process.WaitForExit();
+                        Log("Rebuilding FrontEndTextures.tpk for FrontA.bun using XNFSTpkTool...");
+
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = Path.Combine(GetResourcesPath(), @"FrontEnd", @"XNFSTPKTool.exe");
+                            process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
+                            process.StartInfo.Arguments = @"-w2 FrontEndTextures\729181AD.ini FrontEndTextures.tpk";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.Start();
+
+                            Log(process.StandardOutput.ReadToEnd());
+
+                            process.WaitForExit();
+                        }
 
                         if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")))
                         {
@@ -2518,6 +3497,8 @@ namespace Ed
                             FrontAFileWriter.Dispose();
                             FrontAFile.Close();
                             FrontAFile.Dispose();
+
+                            Log("Successfully rebuilt FrontA.bun file.");
                         }
 
                         // Copy it to the game dir w/ a backup
@@ -2530,7 +3511,7 @@ namespace Ed
                         // Copy
                         File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\" + "FrontA.bun"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontA.bun"), true);
 
-                        Log("Successfully rebuilt FrontA.bun file.");
+                        
                     }
 
                     if (CurrentGame == (int)EdTypes.Game.Carbon)
@@ -2842,13 +3823,22 @@ namespace Ed
                         }
 
                         // Finally rebuild the file
-                        Process process = new Process();
-                        process.StartInfo.FileName = "XNFSTPKTool.exe";
-                        process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
-                        process.StartInfo.Arguments = @"-w FrontEndTextures\8D08770D.ini FrontEndTextures.tpk";
-                        process.Start();
-                        process.WaitForExit();
+                        Log("Rebuilding FrontEndTextures.tpk for FrontB1.lzc using XNFSTpkTool...");
 
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = Path.Combine(GetResourcesPath(), @"FrontEnd", @"XNFSTPKTool.exe");
+                            process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
+                            process.StartInfo.Arguments = @"-w FrontEndTextures\8D08770D.ini FrontEndTextures.tpk";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.Start();
+
+                            Log(process.StandardOutput.ReadToEnd());
+
+                            process.WaitForExit();
+                        }
+                                
                         if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")))
                         {
                             // merge other chunks in
@@ -2884,6 +3874,8 @@ namespace Ed
                             FrontB1FileWriter.Dispose();
                             FrontB1File.Close();
                             FrontB1File.Dispose();
+
+                            Log("Successfully rebuilt FrontB1.lzc file.");
                         }
                         
                         // Copy it to the game dir w/ a backup
@@ -2895,9 +3887,726 @@ namespace Ed
                         }
                         // Copy
                         File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\" + "FrontB1.lzc"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.lzc"), true);
-
-                        Log("Successfully rebuilt FrontB1.lzc file.");
+                            
                     }
+
+                    if (CurrentGame == (int)EdTypes.Game.ProStreet)
+                    {
+                        DirectoryInfo FrontEndTexturesTPK = new DirectoryInfo(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures\B66CD660"));
+                        FileInfo[] FrontEndTexturesDDSFiles = FrontEndTexturesTPK.GetFiles("*.dds", SearchOption.AllDirectories);
+                        if (FrontEndTexturesDDSFiles.Length == 0)
+                        {
+                            goto DoneMessage;
+                        }
+
+                        // Return to original file before any modifications. (To prevent overlapping and stuff)
+                        File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures\B66CD660_orig.ini"), Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures\B66CD660.ini"), true);
+
+                        // Check if required info exists in the config file. If not, add it.
+                        var TPKInfoSection = new XNFSTPKToolWrapper.TPKSection();
+                        var AnimationSections = new List<XNFSTPKToolWrapper.AnimationSection>();
+                        var TextureSections = new List<XNFSTPKToolWrapper.TextureSectionTPKv3>();
+
+                        using (var reader = new StreamReader(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures\B66CD660.ini"))) // sorry, quick and dirty
+                        {
+                            while (!reader.EndOfStream)
+                            {
+                                var line = reader.ReadLine();
+                                if (line.StartsWith("[TPK]")) // TPK Info Section
+                                {
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.TypeName = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+                                    /*
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.TypeVal = Int32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+                                    */
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Path = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Hash = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Animations = Int32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+                                }
+                                else if (line.StartsWith("[Anim")) // Any animation section
+                                {
+                                    var AnimSec = new XNFSTPKToolWrapper.AnimationSection();
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Name = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Hash = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Frames = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Framerate = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown1 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown2 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown3 = UInt16.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown4 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown5 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown6 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    for (int f = 0; f < AnimSec.Frames; f++)
+                                    {
+                                        line = reader.ReadLine();
+                                        AnimSec.FrameList.Add(UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber));
+                                    }
+                                    AnimationSections.Add(AnimSec);
+                                }
+                                else if (line.StartsWith("[")) // Any hashed (texture) section
+                                {
+                                    var TexSec = new XNFSTPKToolWrapper.TextureSectionTPKv3();
+
+                                    if (UInt32.TryParse(line.Trim('[', ']'), NumberStyles.HexNumber, new CultureInfo("en-US", false), out TexSec.Hash))
+                                    {
+                                        line = reader.ReadLine();
+                                        TexSec.File = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                        line = reader.ReadLine();
+                                        TexSec.Name = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                        line = reader.ReadLine();
+                                        TexSec.Hash2 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        /*
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte1 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte2 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte3 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        */
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown1 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown3 = UInt16.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown4 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown5 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown6 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown7 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown8 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown9 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown10 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown11 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown12 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown17 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        /*
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown18 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        */
+                                        TextureSections.Add(TexSec);
+                                    }
+                                }
+                            }
+                            reader.Close();
+                            reader.Dispose();
+                        }
+
+                        foreach (FileInfo DDSFile in FrontEndTexturesDDSFiles) // names in folder
+                        {
+                            bool IsThereAConfigForThisDDS = false;
+
+                            // Find if the texture exists in the config file (at least once)
+                            foreach (XNFSTPKToolWrapper.TextureSectionTPKv3 TexSec in TextureSections)  // names in ini
+                            {
+                                if (TexSec.File == (@"FrontEndTextures\B66CD660\" + DDSFile.Name))
+                                {
+                                    IsThereAConfigForThisDDS = true;
+                                    break;
+                                }
+                            }
+
+                            // If it doesn't, add a new entry into the ini file
+                            if (!IsThereAConfigForThisDDS)
+                            {
+                                var ANewTexSec = new XNFSTPKToolWrapper.TextureSectionTPKv3();
+
+                                ANewTexSec.Hash = (uint)BinHash.Hash(Path.GetFileNameWithoutExtension(DDSFile.Name));
+                                ANewTexSec.File = @"FrontEndTextures\B66CD660\" + DDSFile.Name;
+                                ANewTexSec.Name = Path.GetFileNameWithoutExtension(DDSFile.Name);
+                                ANewTexSec.Hash2 = 0x1A93CF;
+
+                                // Get texture dimensions for some quick maths
+                                var DDSFileToGetDimensions = File.Open(DDSFile.FullName, FileMode.Open);
+                                var DDSFileReader = new BinaryReader(DDSFileToGetDimensions);
+
+                                DDSFileReader.BaseStream.Position = 0x0C;
+                                int VerRes = DDSFileReader.ReadInt32();
+                                int HorRes = DDSFileReader.ReadInt32();
+
+                                DDSFileReader.Close();
+                                DDSFileReader.Dispose();
+                                DDSFileToGetDimensions.Close();
+                                DDSFileToGetDimensions.Dispose();
+
+                                ANewTexSec.UnkByte1 = (byte)Math.Log(HorRes, 2); // Looks like there were some quick maths
+                                ANewTexSec.UnkByte2 = (byte)Math.Log(VerRes, 2); // The values are log based 2 of res values.
+                                ANewTexSec.UnkByte3 = 0x00;
+                                /*
+                                ANewTexSec.Unknown1 = 0x00; // temp
+                                ANewTexSec.Unknown3 = 0x20;
+                                ANewTexSec.Unknown4 = 0x500;
+                                ANewTexSec.Unknown5 = 0x10200;
+                                ANewTexSec.Unknown6 = 0x0;
+                                ANewTexSec.Unknown7 = 0x0;
+                                ANewTexSec.Unknown8 = 0x1000000;
+                                ANewTexSec.Unknown9 = 0x100;
+                                ANewTexSec.Unknown10 = 0x00;
+                                ANewTexSec.Unknown11 = 0x00;
+                                ANewTexSec.Unknown12 = 0x00;
+                                ANewTexSec.Unknown17 = 0x00;
+                                ANewTexSec.Unknown18 = 0x00;
+                                */
+
+                                ANewTexSec.Unknown1 = 0x10000; // temp
+                                ANewTexSec.Unknown3 = 0;
+                                ANewTexSec.Unknown4 = 0x20;
+                                ANewTexSec.Unknown5 = 0x500;
+                                ANewTexSec.Unknown6 = 0x10200;
+                                ANewTexSec.Unknown7 = 0x0;
+                                ANewTexSec.Unknown8 = 0;
+                                ANewTexSec.Unknown9 = 0;
+                                ANewTexSec.Unknown10 = 0x1000100;
+                                ANewTexSec.Unknown11 = 0x00;
+                                ANewTexSec.Unknown12 = 0x00;
+                                ANewTexSec.Unknown17 = 0x00;
+                                ANewTexSec.Unknown18 = 0x00;
+
+                                TextureSections.Add(ANewTexSec);
+                            }
+
+                        }
+
+                        // Sort Texture Sections by hash
+                        TextureSections.Sort((x, y) => x.Hash.CompareTo(y.Hash));
+
+                        // Rebuild the ini file
+                        using (var IniWriter = new StreamWriter(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures\B66CD660.ini"), false))
+                        {
+                            // Write TPK Section
+                            IniWriter.WriteLine("[TPK]");
+                            IniWriter.WriteLine("TypeName" + " = " + TPKInfoSection.TypeName);
+                            //IniWriter.WriteLine("TypeVal" + " = " + TPKInfoSection.TypeVal);
+                            IniWriter.WriteLine("Path" + " = " + TPKInfoSection.Path);
+                            IniWriter.WriteLine("Hash" + " = " + TPKInfoSection.Hash.ToString("X"));
+                            IniWriter.WriteLine("Animations" + " = " + TPKInfoSection.Animations);
+
+                            IniWriter.WriteLine(); // Seperate sections with empty lines
+
+                            // Write Animation Sections
+                            foreach (XNFSTPKToolWrapper.AnimationSection AnimSec in AnimationSections)
+                            {
+                                IniWriter.WriteLine("[Anim" + AnimationSections.IndexOf(AnimSec) + "]");
+                                IniWriter.WriteLine("Name" + " = " + AnimSec.Name);
+                                IniWriter.WriteLine("Hash" + " = " + AnimSec.Hash.ToString("X"));
+                                IniWriter.WriteLine("Frames" + " = " + AnimSec.Frames);
+                                IniWriter.WriteLine("Framerate" + " = " + AnimSec.Framerate);
+                                IniWriter.WriteLine("Unknown1" + " = " + AnimSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown2" + " = " + AnimSec.Unknown2.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + AnimSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + AnimSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + AnimSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + AnimSec.Unknown6.ToString("X"));
+
+                                foreach (uint FrameHash in AnimSec.FrameList) IniWriter.WriteLine("Frame" + AnimSec.FrameList.IndexOf(FrameHash) + " = " + FrameHash.ToString("X"));
+
+                                IniWriter.WriteLine(); // Seperate sections with empty lines
+                            }
+
+                            // Write Texture Sections
+                            foreach (XNFSTPKToolWrapper.TextureSectionTPKv3 TexSec in TextureSections)
+                            {
+                                IniWriter.WriteLine("[" + TexSec.Hash.ToString("X") + "]");
+
+                                IniWriter.WriteLine("File" + " = " + TexSec.File);
+                                IniWriter.WriteLine("Name" + " = " + TexSec.Name);
+                                IniWriter.WriteLine("Hash2" + " = " + TexSec.Hash2.ToString("X"));
+                                /*
+                                IniWriter.WriteLine("UnkByte1" + " = " + TexSec.UnkByte1.ToString("X"));
+                                IniWriter.WriteLine("UnkByte2" + " = " + TexSec.UnkByte2.ToString("X"));
+                                IniWriter.WriteLine("UnkByte3" + " = " + TexSec.UnkByte3.ToString("X"));
+                                IniWriter.WriteLine("Unknown1" + " = " + TexSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + TexSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + TexSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + TexSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + TexSec.Unknown6.ToString("X"));
+                                IniWriter.WriteLine("Unknown7" + " = " + TexSec.Unknown7.ToString("X"));
+                                IniWriter.WriteLine("Unknown8" + " = " + TexSec.Unknown8.ToString("X"));
+                                IniWriter.WriteLine("Unknown9" + " = " + TexSec.Unknown9.ToString("X"));
+                                IniWriter.WriteLine("Unknown10" + " = " + TexSec.Unknown10.ToString("X"));
+                                IniWriter.WriteLine("Unknown11" + " = " + TexSec.Unknown11.ToString("X"));
+                                IniWriter.WriteLine("Unknown12" + " = " + TexSec.Unknown12.ToString("X"));
+                                IniWriter.WriteLine("Unknown17" + " = " + TexSec.Unknown17.ToString("X"));
+                                IniWriter.WriteLine("Unknown18" + " = " + TexSec.Unknown18.ToString("X"));
+                                */
+                                // Temp solution until Xan fixes XNFSTPKTool
+                                IniWriter.WriteLine("TextureFlags" + " = " + TexSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown1" + " = " + TexSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + TexSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + TexSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + TexSec.Unknown6.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + TexSec.Unknown7.ToString("X"));
+                                IniWriter.WriteLine("Unknown7" + " = " + TexSec.Unknown8.ToString("X"));
+                                IniWriter.WriteLine("Unknown8" + " = " + TexSec.Unknown9.ToString("X"));
+                                IniWriter.WriteLine("Unknown9" + " = " + TexSec.Unknown10.ToString("X"));
+                                IniWriter.WriteLine("Unknown10" + " = " + TexSec.Unknown11.ToString("X"));
+                                IniWriter.WriteLine("Unknown11" + " = " + TexSec.Unknown12.ToString("X"));
+                                IniWriter.WriteLine("Unknown12" + " = " + TexSec.Unknown17.ToString("X"));
+                                IniWriter.WriteLine(); // Seperate sections with empty lines
+                            }
+
+                            IniWriter.Close();
+                            IniWriter.Dispose();
+                        }
+
+                        // Finally rebuild the file
+                        Log("Rebuilding FrontEndTextures.tpk for FrontB1.bun using XNFSTpkTool...");
+
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = Path.Combine(GetResourcesPath(), @"FrontEnd", @"XNFSTPKTool.exe");
+                            process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
+                            process.StartInfo.Arguments = @"-w FrontEndTextures\B66CD660.ini FrontEndTextures.tpk";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.Start();
+
+                            Log(process.StandardOutput.ReadToEnd());
+
+                            process.WaitForExit();
+                        }
+                                
+                        if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")))
+                        {
+                            // merge other chunks in
+                            var FrontB1File = File.Create(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontB1.bun"));
+                            var FrontB1FileWriter = new BinaryWriter(FrontB1File);
+
+                            // Write our new TPK
+                            FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTextures.tpk")));
+
+                            /*// Fix padding
+                            PaddingDifference = ((int)FrontB1FileWriter.BaseStream.Position % 128);
+
+                            while (PaddingDifference != 0)
+                            {
+                                FrontB1FileWriter.Write((byte)0);
+                                PaddingDifference = (PaddingDifference + 1) % 128;
+                            }
+
+                            // Fix chunk size
+                            FrontB1FileWriter.BaseStream.Position = 4;
+                            FrontB1FileWriter.Write((int)FrontB1FileWriter.BaseStream.Length - 8);
+
+                            // Go back to original position
+                            FrontB1FileWriter.BaseStream.Position = FrontB1FileWriter.BaseStream.Length;
+                            */
+                            // Write the rest
+                            FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\FrontEndTexturesPC.tpk")));
+                            FrontB1FileWriter.Write(File.ReadAllBytes(Path.Combine(GetResourcesPath(), @"FrontEnd\BCHUNK_QUICKSPLINE.bin")));
+
+                            // close stream
+                            FrontB1FileWriter.Close();
+                            FrontB1FileWriter.Dispose();
+                            FrontB1File.Close();
+                            FrontB1File.Dispose();
+
+                            Log("Successfully rebuilt FrontB1.bun file.");
+                        }
+                        
+                        // Copy it to the game dir w/ a backup
+                        // Make a backup
+                        if (!DisableBackups)
+                        {
+                            if ((!File.Exists(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.bun" + ".edbackup"))) && File.Exists((Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.bun"))))
+                                File.Copy(Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.bun"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.bun" + ".edbackup"), true);
+                        }
+                        // Copy
+                        File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\" + "FrontB1.bun"), Path.Combine(WorkingFolder, @"FrontEnd\" + "FrontB1.bun"), true);
+                            
+                    }
+
+                    if (CurrentGame == (int)EdTypes.Game.Undercover)
+                    {
+                        DirectoryInfo LOGOTEXTURESTPK = new DirectoryInfo(Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES\D78D2BB1"));
+                        FileInfo[] LOGOTEXTURESDDSFiles = LOGOTEXTURESTPK.GetFiles("*.dds", SearchOption.AllDirectories);
+                        if (LOGOTEXTURESDDSFiles.Length == 0)
+                        {
+                            goto DoneMessage;
+                        }
+
+                        // Return to original file before any modifications. (To prevent overlapping and stuff)
+                        File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES\D78D2BB1_orig.ini"), Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES\D78D2BB1.ini"), true);
+
+                        // Check if required info exists in the config file. If not, add it.
+                        var TPKInfoSection = new XNFSTPKToolWrapper.TPKSection();
+                        var AnimationSections = new List<XNFSTPKToolWrapper.AnimationSection>();
+                        var TextureSections = new List<XNFSTPKToolWrapper.TextureSectionTPKv3>();
+
+                        using (var reader = new StreamReader(Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES\D78D2BB1.ini"))) // sorry, quick and dirty
+                        {
+                            while (!reader.EndOfStream)
+                            {
+                                var line = reader.ReadLine();
+                                if (line.StartsWith("[TPK]")) // TPK Info Section
+                                {
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.TypeName = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+                                    /*
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.TypeVal = Int32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+                                    */
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Path = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Hash = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    TPKInfoSection.Animations = Int32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+                                }
+                                else if (line.StartsWith("[Anim")) // Any animation section
+                                {
+                                    var AnimSec = new XNFSTPKToolWrapper.AnimationSection();
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Name = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Hash = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Frames = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Framerate = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='));
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown1 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown2 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown3 = UInt16.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown4 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown5 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    line = reader.ReadLine();
+                                    AnimSec.Unknown6 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                    for (int f = 0; f < AnimSec.Frames; f++)
+                                    {
+                                        line = reader.ReadLine();
+                                        AnimSec.FrameList.Add(UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber));
+                                    }
+                                    AnimationSections.Add(AnimSec);
+                                }
+                                else if (line.StartsWith("[")) // Any hashed (texture) section
+                                {
+                                    var TexSec = new XNFSTPKToolWrapper.TextureSectionTPKv3();
+
+                                    if (UInt32.TryParse(line.Trim('[', ']'), NumberStyles.HexNumber, new CultureInfo("en-US", false), out TexSec.Hash))
+                                    {
+                                        line = reader.ReadLine();
+                                        TexSec.File = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                        line = reader.ReadLine();
+                                        TexSec.Name = line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '=');
+
+                                        line = reader.ReadLine();
+                                        TexSec.Hash2 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        /*
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte1 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte2 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.UnkByte3 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        */
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown1 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown3 = UInt16.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown4 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown5 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown6 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown7 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown8 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown9 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown10 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown11 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown12 = UInt32.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown17 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        /*
+                                        line = reader.ReadLine();
+                                        TexSec.Unknown18 = Byte.Parse(line.Substring(line.IndexOf('=') + 1).TrimStart(' ', '='), NumberStyles.HexNumber);
+                                        */
+                                        TextureSections.Add(TexSec);
+                                    }
+                                }
+                            }
+                            reader.Close();
+                            reader.Dispose();
+                        }
+
+                        foreach (FileInfo DDSFile in LOGOTEXTURESDDSFiles) // names in folder
+                        {
+                            bool IsThereAConfigForThisDDS = false;
+
+                            // Find if the texture exists in the config file (at least once)
+                            foreach (XNFSTPKToolWrapper.TextureSectionTPKv3 TexSec in TextureSections)  // names in ini
+                            {
+                                if (TexSec.File == (@"LOGOTEXTURES\D78D2BB1\" + DDSFile.Name))
+                                {
+                                    IsThereAConfigForThisDDS = true;
+                                    break;
+                                }
+                            }
+
+                            // If it doesn't, add a new entry into the ini file
+                            if (!IsThereAConfigForThisDDS)
+                            {
+                                var ANewTexSec = new XNFSTPKToolWrapper.TextureSectionTPKv3();
+
+                                ANewTexSec.Hash = (uint)BinHash.Hash(Path.GetFileNameWithoutExtension(DDSFile.Name));
+                                ANewTexSec.File = @"LOGOTEXTURES\D78D2BB1\" + DDSFile.Name;
+                                ANewTexSec.Name = Path.GetFileNameWithoutExtension(DDSFile.Name);
+                                ANewTexSec.Hash2 = 0x1A93CF;
+
+                                // Get texture dimensions for some quick maths
+                                var DDSFileToGetDimensions = File.Open(DDSFile.FullName, FileMode.Open);
+                                var DDSFileReader = new BinaryReader(DDSFileToGetDimensions);
+
+                                DDSFileReader.BaseStream.Position = 0x0C;
+                                int VerRes = DDSFileReader.ReadInt32();
+                                int HorRes = DDSFileReader.ReadInt32();
+
+                                DDSFileReader.Close();
+                                DDSFileReader.Dispose();
+                                DDSFileToGetDimensions.Close();
+                                DDSFileToGetDimensions.Dispose();
+
+                                ANewTexSec.UnkByte1 = (byte)Math.Log(HorRes, 2); // Looks like there were some quick maths
+                                ANewTexSec.UnkByte2 = (byte)Math.Log(VerRes, 2); // The values are log based 2 of res values.
+                                ANewTexSec.UnkByte3 = 0x00;
+                                /*
+                                ANewTexSec.Unknown1 = 0x00; // temp
+                                ANewTexSec.Unknown3 = 0x20;
+                                ANewTexSec.Unknown4 = 0x500;
+                                ANewTexSec.Unknown5 = 0x10200;
+                                ANewTexSec.Unknown6 = 0x0;
+                                ANewTexSec.Unknown7 = 0x0;
+                                ANewTexSec.Unknown8 = 0x1000000;
+                                ANewTexSec.Unknown9 = 0x100;
+                                ANewTexSec.Unknown10 = 0x00;
+                                ANewTexSec.Unknown11 = 0x00;
+                                ANewTexSec.Unknown12 = 0x00;
+                                ANewTexSec.Unknown17 = 0x00;
+                                ANewTexSec.Unknown18 = 0x00;
+                                */
+
+                                ANewTexSec.Unknown1 = 0x10000; // temp
+                                ANewTexSec.Unknown3 = 0;
+                                ANewTexSec.Unknown4 = 0x26;
+                                ANewTexSec.Unknown5 = 0x500;
+                                ANewTexSec.Unknown6 = 0x20200;
+                                ANewTexSec.Unknown7 = 0x6;
+                                ANewTexSec.Unknown8 = 0;
+                                ANewTexSec.Unknown9 = 0;
+                                ANewTexSec.Unknown10 = 0x1000100;
+                                ANewTexSec.Unknown11 = 0x00;
+                                ANewTexSec.Unknown12 = 0x00;
+                                ANewTexSec.Unknown17 = 0x00;
+                                ANewTexSec.Unknown18 = 0x00;
+
+                                TextureSections.Add(ANewTexSec);
+                            }
+
+                        }
+
+                        // Sort Texture Sections by hash
+                        TextureSections.Sort((x, y) => x.Hash.CompareTo(y.Hash));
+
+                        // Rebuild the ini file
+                        using (var IniWriter = new StreamWriter(Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES\D78D2BB1.ini"), false))
+                        {
+                            // Write TPK Section
+                            IniWriter.WriteLine("[TPK]");
+                            IniWriter.WriteLine("TypeName" + " = " + TPKInfoSection.TypeName);
+                            //IniWriter.WriteLine("TypeVal" + " = " + TPKInfoSection.TypeVal);
+                            IniWriter.WriteLine("Path" + " = " + TPKInfoSection.Path);
+                            IniWriter.WriteLine("Hash" + " = " + TPKInfoSection.Hash.ToString("X"));
+                            IniWriter.WriteLine("Animations" + " = " + TPKInfoSection.Animations);
+
+                            IniWriter.WriteLine(); // Seperate sections with empty lines
+
+                            // Write Animation Sections
+                            foreach (XNFSTPKToolWrapper.AnimationSection AnimSec in AnimationSections)
+                            {
+                                IniWriter.WriteLine("[Anim" + AnimationSections.IndexOf(AnimSec) + "]");
+                                IniWriter.WriteLine("Name" + " = " + AnimSec.Name);
+                                IniWriter.WriteLine("Hash" + " = " + AnimSec.Hash.ToString("X"));
+                                IniWriter.WriteLine("Frames" + " = " + AnimSec.Frames);
+                                IniWriter.WriteLine("Framerate" + " = " + AnimSec.Framerate);
+                                IniWriter.WriteLine("Unknown1" + " = " + AnimSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown2" + " = " + AnimSec.Unknown2.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + AnimSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + AnimSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + AnimSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + AnimSec.Unknown6.ToString("X"));
+
+                                foreach (uint FrameHash in AnimSec.FrameList) IniWriter.WriteLine("Frame" + AnimSec.FrameList.IndexOf(FrameHash) + " = " + FrameHash.ToString("X"));
+
+                                IniWriter.WriteLine(); // Seperate sections with empty lines
+                            }
+
+                            // Write Texture Sections
+                            foreach (XNFSTPKToolWrapper.TextureSectionTPKv3 TexSec in TextureSections)
+                            {
+                                IniWriter.WriteLine("[" + TexSec.Hash.ToString("X") + "]");
+
+                                IniWriter.WriteLine("File" + " = " + TexSec.File);
+                                IniWriter.WriteLine("Name" + " = " + TexSec.Name);
+                                IniWriter.WriteLine("Hash2" + " = " + TexSec.Hash2.ToString("X"));
+                                /*
+                                IniWriter.WriteLine("UnkByte1" + " = " + TexSec.UnkByte1.ToString("X"));
+                                IniWriter.WriteLine("UnkByte2" + " = " + TexSec.UnkByte2.ToString("X"));
+                                IniWriter.WriteLine("UnkByte3" + " = " + TexSec.UnkByte3.ToString("X"));
+                                IniWriter.WriteLine("Unknown1" + " = " + TexSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + TexSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + TexSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + TexSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + TexSec.Unknown6.ToString("X"));
+                                IniWriter.WriteLine("Unknown7" + " = " + TexSec.Unknown7.ToString("X"));
+                                IniWriter.WriteLine("Unknown8" + " = " + TexSec.Unknown8.ToString("X"));
+                                IniWriter.WriteLine("Unknown9" + " = " + TexSec.Unknown9.ToString("X"));
+                                IniWriter.WriteLine("Unknown10" + " = " + TexSec.Unknown10.ToString("X"));
+                                IniWriter.WriteLine("Unknown11" + " = " + TexSec.Unknown11.ToString("X"));
+                                IniWriter.WriteLine("Unknown12" + " = " + TexSec.Unknown12.ToString("X"));
+                                IniWriter.WriteLine("Unknown17" + " = " + TexSec.Unknown17.ToString("X"));
+                                IniWriter.WriteLine("Unknown18" + " = " + TexSec.Unknown18.ToString("X"));
+                                */
+                                // Temp solution until Xan fixes XNFSTPKTool
+                                IniWriter.WriteLine("TextureFlags" + " = " + TexSec.Unknown1.ToString("X"));
+                                IniWriter.WriteLine("Unknown1" + " = " + TexSec.Unknown3.ToString("X"));
+                                IniWriter.WriteLine("Unknown3" + " = " + TexSec.Unknown4.ToString("X"));
+                                IniWriter.WriteLine("Unknown4" + " = " + TexSec.Unknown5.ToString("X"));
+                                IniWriter.WriteLine("Unknown5" + " = " + TexSec.Unknown6.ToString("X"));
+                                IniWriter.WriteLine("Unknown6" + " = " + TexSec.Unknown7.ToString("X"));
+                                IniWriter.WriteLine("Unknown7" + " = " + TexSec.Unknown8.ToString("X"));
+                                IniWriter.WriteLine("Unknown8" + " = " + TexSec.Unknown9.ToString("X"));
+                                IniWriter.WriteLine("Unknown9" + " = " + TexSec.Unknown10.ToString("X"));
+                                IniWriter.WriteLine("Unknown10" + " = " + TexSec.Unknown11.ToString("X"));
+                                IniWriter.WriteLine("Unknown11" + " = " + TexSec.Unknown12.ToString("X"));
+                                IniWriter.WriteLine("Unknown12" + " = " + TexSec.Unknown17.ToString("X"));
+                                IniWriter.WriteLine(); // Seperate sections with empty lines
+                            }
+
+                            IniWriter.Close();
+                            IniWriter.Dispose();
+                        }
+
+                        // Finally rebuild the file
+                        Log("Rebuilding LOGOTEXTURES.BUN using XNFSTpkTool...");
+
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = Path.Combine(GetResourcesPath(), @"FrontEnd", @"XNFSTPKTool.exe");
+                            process.StartInfo.WorkingDirectory = Path.Combine(GetResourcesPath(), @"FrontEnd");
+                            process.StartInfo.Arguments = @"-w LOGOTEXTURES\D78D2BB1.ini LOGOTEXTURES.BUN";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.Start();
+
+                            Log(process.StandardOutput.ReadToEnd());
+
+                            process.WaitForExit();
+                        }
+
+                        if (File.Exists(Path.Combine(GetResourcesPath(), @"FrontEnd\LOGOTEXTURES.BUN")))
+                        {
+                            Log("Successfully rebuilt LOGOTEXTURES.BUN file.");
+                        }
+
+                        // Copy it to the game dir w/ a backup
+                        // Make a backup
+                        if (!DisableBackups)
+                        {
+                            if ((!File.Exists(Path.Combine(WorkingFolder, @"FrontEnd\" + "LOGOTEXTURES.BUN" + ".edbackup"))) && File.Exists((Path.Combine(WorkingFolder, @"FrontEnd\" + "LOGOTEXTURES.BUN"))))
+                                File.Copy(Path.Combine(WorkingFolder, @"FrontEnd\" + "LOGOTEXTURES.BUN"), Path.Combine(WorkingFolder, @"FrontEnd\" + "LOGOTEXTURES.BUN" + ".edbackup"), true);
+                        }
+                        // Copy
+                        File.Copy(Path.Combine(GetResourcesPath(), @"FrontEnd\" + "LOGOTEXTURES.BUN"), Path.Combine(WorkingFolder, @"FrontEnd\" + "LOGOTEXTURES.BUN"), true);
+
+                    }
+
                 }
 
                 DoneMessage:
@@ -2905,6 +4614,32 @@ namespace Ed
                 MessageBox.Show("New cars added successfully!.", "Ed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Log("New cars added successfully.", true);
                 DeleteTempPath();
+
+               switch (CurrentGame)
+               {
+                    case (int)EdTypes.Game.MostWanted:
+                            if (!File.Exists(Path.Combine(WorkingFolder, "scripts", "NFSMWUnlimiter.asi")))
+                            {
+                                var DownloadMWUnl = MessageBox.Show("Looks like you don't have NFSMW Unlimiter installed." + Environment.NewLine
+                                    + "Do you want to download NFSMW Unlimiter now?", "Ed", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                                if (DownloadMWUnl == DialogResult.Yes) Process.Start("https://github.com/nlgzrgn/NFSMWUnlimiter/releases");
+                            }
+                            else goto default;
+                        break;
+                    case (int)EdTypes.Game.Carbon:
+                            if (!(File.Exists(Path.Combine(WorkingFolder, "scripts", "NFSCUnlimiter.asi")) || (File.Exists(Path.Combine(WorkingFolder, "scripts", "nfsc-limits.asi")))))
+                            {
+                                var DownloadCUnl = MessageBox.Show("Looks like you don't have NFSC Unlimiter or Car Array Patch installed." + Environment.NewLine
+                                    + "Do you want to download NFSC Unlimiter now?", "Ed", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                                if (DownloadCUnl == DialogResult.Yes) Process.Start("https://github.com/nlgzrgn/NFSCUnlimiter/releases");
+                            }
+                            else goto default;
+                            break;
+                    default:
+                            var RunGameNow = MessageBox.Show("Do you want to run the game now?", "Ed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (RunGameNow == DialogResult.Yes) executeTheGameToolStripMenuItem_Click(sender, new EventArgs());
+                            break;
+               }
 
             }
             catch (Exception ex)
@@ -2952,6 +4687,51 @@ namespace Ed
 
             Ed.Default.AutoRestoreGlobalB = AutoRestoreGlobalB;
             Ed.Default.Save();
+        }
+
+        private void boundsCollisionDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string Resources = GetBoundsPath();
+            Process.Start("explorer", Resources);
+        }
+
+        private void frontEndTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string Resources = GetFrontEndTexturesPath();
+            Process.Start("explorer", Resources);
+        }
+
+        private void openLogFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("Ed.log");
+        }
+
+        private void executeTheGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (CurrentGame)
+            {
+                case (int)EdTypes.Game.MostWanted:
+                    ProcessStartInfo mw = new ProcessStartInfo("speed.exe");
+                    mw.WorkingDirectory = WorkingFolder;
+                    Process.Start(mw);
+                    break;
+                case (int)EdTypes.Game.Carbon:
+                    ProcessStartInfo crbn = new ProcessStartInfo("NFSC.exe");
+                    crbn.WorkingDirectory = WorkingFolder;
+                    Process.Start(crbn);
+                    break;
+                case (int)EdTypes.Game.ProStreet:
+                case (int)EdTypes.Game.Undercover:
+                    ProcessStartInfo psuc = new ProcessStartInfo("NFS.exe");
+                    psuc.WorkingDirectory = WorkingFolder;
+                    Process.Start(psuc);
+                    break;
+            }
+        }
+
+        private void openGameDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer", WorkingFolder);
         }
     }
 }

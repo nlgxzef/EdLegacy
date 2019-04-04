@@ -76,6 +76,8 @@
     <Compile Include="CarCollision.cs" />
     <Compile Include="CarPartIDsCarbon.cs" />
     <Compile Include="CarPartIDsMostWanted.cs" />
+    <Compile Include="CarPartIDsProStreet.cs" />
+    <Compile Include="CarPartIDsUndercover.cs" />
     <Compile Include="CarResource.cs" />
     <Compile Include="CarTypeInfo.cs" />
     <Compile Include="Ed.Designer.cs">

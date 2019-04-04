@@ -41,6 +41,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemBrowseConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemBrowseResources = new System.Windows.Forms.ToolStripMenuItem();
+            this.boundsCollisionDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.frontEndTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuTools = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,12 +53,17 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuUnlockFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.executeTheGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemBackup = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemLog = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemTempFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemRestoreGlobalB = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutEdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListCarsToAdd = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -80,7 +87,7 @@
             // DialogWorkingFolder
             // 
             this.DialogWorkingFolder.Description = "Select the main directory of the game you want to work on. Supported games are: N" +
-    "FS Most Wanted (2005), NFS Carbon.";
+    "FS Most Wanted (2005), Carbon, ProStreet and Undercover.";
             this.DialogWorkingFolder.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
             // ButtonAddCars
@@ -179,6 +186,9 @@
             // 
             // MenuItemBrowseResources
             // 
+            this.MenuItemBrowseResources.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.boundsCollisionDataToolStripMenuItem,
+            this.frontEndTexturesToolStripMenuItem});
             this.MenuItemBrowseResources.Name = "MenuItemBrowseResources";
             this.MenuItemBrowseResources.ShortcutKeyDisplayString = "";
             this.MenuItemBrowseResources.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
@@ -186,6 +196,20 @@
             this.MenuItemBrowseResources.Text = "Browse Resources Folder...";
             this.MenuItemBrowseResources.ToolTipText = "Opens resources folder for the game you are working on.";
             this.MenuItemBrowseResources.Click += new System.EventHandler(this.MenuItemBrowseResources_Click);
+            // 
+            // boundsCollisionDataToolStripMenuItem
+            // 
+            this.boundsCollisionDataToolStripMenuItem.Name = "boundsCollisionDataToolStripMenuItem";
+            this.boundsCollisionDataToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.boundsCollisionDataToolStripMenuItem.Text = "Bounds (Collision Data)...";
+            this.boundsCollisionDataToolStripMenuItem.Click += new System.EventHandler(this.boundsCollisionDataToolStripMenuItem_Click);
+            // 
+            // frontEndTexturesToolStripMenuItem
+            // 
+            this.frontEndTexturesToolStripMenuItem.Name = "frontEndTexturesToolStripMenuItem";
+            this.frontEndTexturesToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.frontEndTexturesToolStripMenuItem.Text = "FrontEnd Textures...";
+            this.frontEndTexturesToolStripMenuItem.Click += new System.EventHandler(this.frontEndTexturesToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -211,7 +235,10 @@
             this.addCarsFromConfigFilesToolStripMenuItem,
             this.toolStripSeparator4,
             this.menuUnlockFiles,
-            this.restoreBackupsToolStripMenuItem});
+            this.restoreBackupsToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.executeTheGameToolStripMenuItem,
+            this.openGameDirectoryToolStripMenuItem});
             this.MenuTools.Name = "MenuTools";
             this.MenuTools.Size = new System.Drawing.Size(47, 20);
             this.MenuTools.Text = "Tools";
@@ -270,6 +297,29 @@
             this.restoreBackupsToolStripMenuItem.ToolTipText = "Restores backups taken by Ed, which have \".edbackup\" extension.";
             this.restoreBackupsToolStripMenuItem.Click += new System.EventHandler(this.ButtonRestoreBackups_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(295, 6);
+            // 
+            // executeTheGameToolStripMenuItem
+            // 
+            this.executeTheGameToolStripMenuItem.Name = "executeTheGameToolStripMenuItem";
+            this.executeTheGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.E)));
+            this.executeTheGameToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
+            this.executeTheGameToolStripMenuItem.Text = "Execute the Game";
+            this.executeTheGameToolStripMenuItem.ToolTipText = "Runs the game you are working on.";
+            this.executeTheGameToolStripMenuItem.Click += new System.EventHandler(this.executeTheGameToolStripMenuItem_Click);
+            // 
+            // openGameDirectoryToolStripMenuItem
+            // 
+            this.openGameDirectoryToolStripMenuItem.Name = "openGameDirectoryToolStripMenuItem";
+            this.openGameDirectoryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
+            this.openGameDirectoryToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
+            this.openGameDirectoryToolStripMenuItem.Text = "Open Game Directory...";
+            this.openGameDirectoryToolStripMenuItem.ToolTipText = "Opens the directory of the game you are working on.";
+            this.openGameDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openGameDirectoryToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -327,16 +377,31 @@
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openLogFileToolStripMenuItem,
+            this.toolStripSeparator5,
             this.aboutEdToolStripMenuItem});
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(44, 20);
             this.toolStripMenuItem4.Text = "Help";
             // 
+            // openLogFileToolStripMenuItem
+            // 
+            this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
+            this.openLogFileToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openLogFileToolStripMenuItem.Text = "Open Log file...";
+            this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            // 
             // aboutEdToolStripMenuItem
             // 
             this.aboutEdToolStripMenuItem.Name = "aboutEdToolStripMenuItem";
             this.aboutEdToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutEdToolStripMenuItem.Text = "About Ed...";
             this.aboutEdToolStripMenuItem.Click += new System.EventHandler(this.aboutEdToolStripMenuItem_Click);
             // 
@@ -430,6 +495,13 @@
         private System.Windows.Forms.ToolStripMenuItem MenuItemRefresh;
         private System.Windows.Forms.ToolStripMenuItem MenuItemTempFiles;
         private System.Windows.Forms.ToolStripMenuItem MenuItemRestoreGlobalB;
+        private System.Windows.Forms.ToolStripMenuItem boundsCollisionDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem frontEndTexturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openLogFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem executeTheGameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem;
     }
 }
 
