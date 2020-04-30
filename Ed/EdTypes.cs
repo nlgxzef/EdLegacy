@@ -11,6 +11,8 @@ namespace Ed
     {
         public enum Game : int
         {
+            Underground = 7,
+            Underground2 = 8,
             MostWanted = 9,
             Carbon = 10,
             ProStreet = 11,

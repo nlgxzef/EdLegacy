@@ -32,7 +32,6 @@
             this.LabelWorkingDir = new System.Windows.Forms.Label();
             this.DialogWorkingFolder = new System.Windows.Forms.FolderBrowserDialog();
             this.ButtonAddCars = new System.Windows.Forms.Button();
-            this.ButtonViewCars = new System.Windows.Forms.Button();
             this.StatusBarEd = new System.Windows.Forms.StatusStrip();
             this.StatusTextEd = new System.Windows.Forms.ToolStripStatusLabel();
             this.MenuBarEd = new System.Windows.Forms.MenuStrip();
@@ -61,6 +60,10 @@
             this.MenuItemLog = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemTempFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemRestoreGlobalB = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuItemTextWhile = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItemTextures = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItemStrings = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.openLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -87,7 +90,7 @@
             // DialogWorkingFolder
             // 
             this.DialogWorkingFolder.Description = "Select the main directory of the game you want to work on. Supported games are: N" +
-    "FS Most Wanted (2005), Carbon, ProStreet and Undercover.";
+    "FS Underground 1/2, Most Wanted (2005), Carbon, ProStreet and Undercover.";
             this.DialogWorkingFolder.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
             // ButtonAddCars
@@ -100,19 +103,6 @@
             this.ButtonAddCars.Text = "Apply";
             this.ButtonAddCars.UseVisualStyleBackColor = true;
             this.ButtonAddCars.Click += new System.EventHandler(this.addCarsFromConfigFilesToolStripMenuItem_Click);
-            // 
-            // ButtonViewCars
-            // 
-            this.ButtonViewCars.Enabled = false;
-            this.ButtonViewCars.Location = new System.Drawing.Point(377, 300);
-            this.ButtonViewCars.Name = "ButtonViewCars";
-            this.ButtonViewCars.Size = new System.Drawing.Size(112, 23);
-            this.ButtonViewCars.TabIndex = 3;
-            this.ButtonViewCars.TabStop = false;
-            this.ButtonViewCars.Text = "View Cars (Debug)";
-            this.ButtonViewCars.UseVisualStyleBackColor = true;
-            this.ButtonViewCars.Visible = false;
-            this.ButtonViewCars.Click += new System.EventHandler(this.ButtonViewCars_Click);
             // 
             // StatusBarEd
             // 
@@ -240,7 +230,7 @@
             this.executeTheGameToolStripMenuItem,
             this.openGameDirectoryToolStripMenuItem});
             this.MenuTools.Name = "MenuTools";
-            this.MenuTools.Size = new System.Drawing.Size(47, 20);
+            this.MenuTools.Size = new System.Drawing.Size(46, 20);
             this.MenuTools.Text = "Tools";
             // 
             // MenuItemRefresh
@@ -326,7 +316,11 @@
             this.MenuItemBackup,
             this.MenuItemLog,
             this.MenuItemTempFiles,
-            this.MenuItemRestoreGlobalB});
+            this.MenuItemRestoreGlobalB,
+            this.toolStripSeparator7,
+            this.MenuItemTextWhile,
+            this.MenuItemTextures,
+            this.MenuItemStrings});
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(61, 20);
             this.toolStripMenuItem3.Text = "Options";
@@ -374,6 +368,36 @@
             this.MenuItemRestoreGlobalB.ToolTipText = "Auto restores the backup of GlobalB.lzc file before adding cars.";
             this.MenuItemRestoreGlobalB.Click += new System.EventHandler(this.automaticallyRestoreGlobalBBackupBeforeAddingCarsToolStripMenuItem_Click);
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(311, 6);
+            // 
+            // MenuItemTextWhile
+            // 
+            this.MenuItemTextWhile.Enabled = false;
+            this.MenuItemTextWhile.Name = "MenuItemTextWhile";
+            this.MenuItemTextWhile.Size = new System.Drawing.Size(314, 22);
+            this.MenuItemTextWhile.Text = "While Adding Cars:";
+            // 
+            // MenuItemTextures
+            // 
+            this.MenuItemTextures.Checked = true;
+            this.MenuItemTextures.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MenuItemTextures.Name = "MenuItemTextures";
+            this.MenuItemTextures.Size = new System.Drawing.Size(314, 22);
+            this.MenuItemTextures.Text = "Rebuild FrontEnd Textures";
+            this.MenuItemTextures.Click += new System.EventHandler(this.MenuItemTextures_Click);
+            // 
+            // MenuItemStrings
+            // 
+            this.MenuItemStrings.Checked = true;
+            this.MenuItemStrings.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MenuItemStrings.Name = "MenuItemStrings";
+            this.MenuItemStrings.Size = new System.Drawing.Size(314, 22);
+            this.MenuItemStrings.Text = "Add Strings";
+            this.MenuItemStrings.Click += new System.EventHandler(this.MenuItemStrings_Click);
+            // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -388,20 +412,20 @@
             // 
             this.openLogFileToolStripMenuItem.Name = "openLogFileToolStripMenuItem";
             this.openLogFileToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openLogFileToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.openLogFileToolStripMenuItem.Text = "Open Log file...";
             this.openLogFileToolStripMenuItem.Click += new System.EventHandler(this.openLogFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(170, 6);
             // 
             // aboutEdToolStripMenuItem
             // 
             this.aboutEdToolStripMenuItem.Name = "aboutEdToolStripMenuItem";
             this.aboutEdToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutEdToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.aboutEdToolStripMenuItem.Text = "About Ed...";
             this.aboutEdToolStripMenuItem.Click += new System.EventHandler(this.aboutEdToolStripMenuItem_Click);
             // 
@@ -410,11 +434,13 @@
             this.ListCarsToAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ListCarsToAdd.CheckBoxes = true;
             this.ListCarsToAdd.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader11});
             this.ListCarsToAdd.FullRowSelect = true;
             this.ListCarsToAdd.GridLines = true;
+            this.ListCarsToAdd.HideSelection = false;
             this.ListCarsToAdd.Location = new System.Drawing.Point(12, 37);
             this.ListCarsToAdd.Name = "ListCarsToAdd";
             this.ListCarsToAdd.ShowItemToolTips = true;
@@ -442,7 +468,6 @@
             this.Controls.Add(this.ListCarsToAdd);
             this.Controls.Add(this.StatusBarEd);
             this.Controls.Add(this.MenuBarEd);
-            this.Controls.Add(this.ButtonViewCars);
             this.Controls.Add(this.ButtonAddCars);
             this.Controls.Add(this.LabelWorkingDir);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -466,7 +491,6 @@
         private System.Windows.Forms.Label LabelWorkingDir;
         private System.Windows.Forms.FolderBrowserDialog DialogWorkingFolder;
         private System.Windows.Forms.Button ButtonAddCars;
-        private System.Windows.Forms.Button ButtonViewCars;
         private System.Windows.Forms.StatusStrip StatusBarEd;
         private System.Windows.Forms.ToolStripStatusLabel StatusTextEd;
         private System.Windows.Forms.MenuStrip MenuBarEd;
@@ -502,6 +526,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem executeTheGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem MenuItemTextWhile;
+        private System.Windows.Forms.ToolStripMenuItem MenuItemTextures;
+        private System.Windows.Forms.ToolStripMenuItem MenuItemStrings;
     }
 }
 

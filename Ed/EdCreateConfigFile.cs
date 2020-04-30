@@ -66,5 +66,55 @@ namespace Ed
             FillSpoiler();
             FillSpoilerAS();
         }
+
+        private void GroupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label34_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label36_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GroupBox9_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label45_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label44_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TextBoxXName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

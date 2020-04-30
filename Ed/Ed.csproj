@@ -78,6 +78,7 @@
     <Compile Include="CarPartIDsMostWanted.cs" />
     <Compile Include="CarPartIDsProStreet.cs" />
     <Compile Include="CarPartIDsUndercover.cs" />
+    <Compile Include="CarPartIDsUnderground2.cs" />
     <Compile Include="CarResource.cs" />
     <Compile Include="CarTypeInfo.cs" />
     <Compile Include="Ed.Designer.cs">

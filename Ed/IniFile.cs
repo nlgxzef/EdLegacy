@@ -227,7 +227,7 @@ namespace Ed
 
             stringValue = TrimCommentsAndSpaces(stringValue);
             double value;
-            if (!double.TryParse(stringValue, out value))
+            if (!double.TryParse(stringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out value))
                 return defaultValue;
 
             if (value < minValue)
