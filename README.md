@@ -1,6 +1,12 @@
 Download: https://github.com/nlgzrgn/Ed/releases/  
 Get EdPacks here: https://github.com/nlgzrgn/EdPacks/
 ------------------------------------------------------------------------------------------------------------
+I decided to move this project to my shelf of shame. Just wanted to push the code if anyone wants to fix it or refer to it for any future tool. As this build is broken, there won't be any public versions of it.
+
+TL;DR: It's deprecated.
+
+If you're still interested, move on:
+------------------------------------------------------------------------------------------------------------
 Description:
 
 Ed is a tool which makes adding cars easier for your favorite racing game!  
@@ -50,6 +56,9 @@ MORE IMPORTANT: It's suggested to use Tools > Unlock Game Files For Modding if i
 
 ------------------------------------------------------------------------------------------------------------
 Changelog: (+ Addition, * Change, ! Attention, - Deletion)
+
+v1.0.0.850 (Build 1; Rev.00 Release Candidate) : (PUSHED AS A REFERENCE, NO PUBLIC RELEASES)
+! The tool won't be developed further and renamed as EdLegacy.
 
 v1.0.0.800 (Build 1; Rev.00 Release Candidate) :
 + Added Need for Speed: ProStreet and Undercover support!
